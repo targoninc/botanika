@@ -2,6 +2,7 @@ import {createRouter} from 'router5';
 import browserPlugin from 'router5-plugin-browser';
 import {ChatTemplates} from "./templates/ChatTemplates.mjs";
 import {VoiceRecorder} from "./VoiceRecorder.mjs";
+import {UiAdapter} from "./UiAdapter.mjs";
 
 const router = createRouter([
     { name: 'chat', path: '/' },
@@ -31,3 +32,6 @@ console.log('Router started.');
 const recorder = new VoiceRecorder();
 recorder.start();
 console.log('Recorder started.');
+setInterval(() => {
+    UiAdapter.updateLoudness(recorder.currentVolume);
+}, 16);

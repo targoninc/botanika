@@ -9,6 +9,7 @@ export class VoiceRecorder {
         this.silence = true;
         this.audioChunks = [];
         this.timeoutHandle = null;
+        this.currentVolume = 0;
     }
 
     start() {
@@ -32,6 +33,7 @@ export class VoiceRecorder {
             sum += input[i] * input[i];
         }
         const level = Math.sqrt(sum / input.length);
+        this.currentVolume = level;
         if (level > this.threshold) {
             this.audioChunks.push(event.data);
             this.silence = false;

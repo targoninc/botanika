@@ -21,6 +21,13 @@ body, html {
     height: 100%;
 }
 
+.message {
+    padding: 10px;
+    background: var(--background-alt);
+    width: max-content;
+    border-radius: var(--border-radius);
+}
+
 .chat-box {
     height: 100%;
     display: flex;
@@ -28,9 +35,19 @@ body, html {
     justify-content: space-between;
 }
 
+.loudness-bar {
+    height: 10px;
+    background: var(--foreground-alt-2);
+    border-radius: var(--border-radius);
+}
+
 .chat-box-messages {
     flex-grow: 1;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 10px;
 }
 
 .chat-box-input {

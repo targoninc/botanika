@@ -27,8 +27,8 @@ export class Api {
      * @constructor
      */
     static async ParseResponse(res) {
-        if (res.statusCode !== 200) {
-            throw new Error(`Response status code: ${res.statusCode}`);
+        if (res.status !== 200) {
+            throw new Error(`Response status code: ${res.status}`);
         }
         const text = await res.text();
         try {

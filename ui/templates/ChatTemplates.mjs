@@ -19,6 +19,9 @@ export class ChatTemplates {
             .classes('chat-box')
             .children(
                 FJS.create('div')
+                    .classes('loudness-bar')
+                    .build(),
+                FJS.create('div')
                     .classes('chat-box-messages')
                     .build(),
                 FJS.create('div')
