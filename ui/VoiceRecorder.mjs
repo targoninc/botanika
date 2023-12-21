@@ -21,9 +21,16 @@ export class VoiceRecorder {
                 processor.connect(this.audioContext.destination);
                 processor.onaudioprocess = this.processAudio.bind(this);
 
+                this.chunkCounter = 0;
                 this.mediaRecorder.ondataavailable = e => {
-                    this.audioChunks.push(e.data);
+                    this.chunkCounter++;
+                    if (this.chunkCounter === 1) {
+                        this.audioHeader = e.data;
+                    } else {
+                        this.audioChunks.push(e.data);
+                    }
                 };
+
                 this.dataInterval = setInterval(() => {
                     this.mediaRecorder.requestData();
                 }, 1000);
@@ -43,11 +50,7 @@ export class VoiceRecorder {
             this.lastDataTime = Date.now();
         } else {
             if (this.lastDataTime && Date.now() - this.lastDataTime > this.timeout && !this.processing) {
-                this.processing = true;
                 await this.sendAudio();
-                this.processing = false;
-                this.audioChunks = [];
-                this.lastDataTime = null;
             }
         }
     }
@@ -56,18 +59,25 @@ export class VoiceRecorder {
         if (this.mediaRecorder) {
             this.mediaRecorder.stop();
         }
+        this.dataInterval && clearInterval(this.dataInterval);
     }
 
     async sendAudio() {
-        if (!this.audioChunks.length || this.audioChunks.length === 0) {
+        if (this.audioChunks.length === 0) {
             return;
         }
-        console.log('sending audio', this.audioChunks);
 
-        const audioBlob = new Blob(this.audioChunks, {type: 'audio/webm; codecs=opus'});
+        this.processing = true;
+        const allAudioData = [this.audioHeader, ...this.audioChunks];
+        const audioBlob = new Blob(allAudioData, {type: 'audio/webm; codecs=opus'});
+
         const formData = new FormData();
         formData.append('file', audioBlob);
-        const res = await Api.VoiceRecognition(formData)
+        const res = await Api.VoiceRecognition(formData);
         UiAdapter.handleResponse(res);
+
+        this.audioChunks = [];
+        this.processing = false;
+        this.lastDataTime = Date.now();
     }
 }
