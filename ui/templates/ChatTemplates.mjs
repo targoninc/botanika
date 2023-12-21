@@ -36,7 +36,7 @@ export class ChatTemplates {
                                     if (input === "") {
                                         return;
                                     }
-                                    Api.AddContext(input).then((res) => {
+                                    Api.SendMessage(input).then((res) => {
                                         const messages = UiAdapter.getChatMessages();
                                         messages.appendChild(ChatTemplates.message(input));
                                         messages.appendChild(ChatTemplates.message(res));

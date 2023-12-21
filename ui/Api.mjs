@@ -52,7 +52,7 @@ export class Api {
         return await Api.ParseResponse(await Api.POSTraw('/voice-recognition', data));
     }
 
-    static async AddContext(text) {
-        return await Api.ParseResponse(await Api.POST('/add-context', {text}));
+    static async SendMessage(text) {
+        return await Api.ParseResponse(await Api.POST('/send-message', {text}));
     }
 }

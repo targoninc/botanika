@@ -2,7 +2,7 @@ import express from 'express';
 import {VoiceRecognitionEndpoint} from "./lib/endpoints/VoiceRecognitionEndpoint.mjs";
 import {fileURLToPath} from "url";
 import path from "path";
-import {AddContextEndpoint} from "./lib/endpoints/AddContextEndpoint.mjs";
+import {SendMessageEndpoint} from "./lib/endpoints/SendMessageEndpoint.mjs";
 import {GetHistoryEndpoint} from "./lib/endpoints/GetHistoryEndpoint.mjs";
 import dotenv from "dotenv";
 import multer from "multer";
@@ -37,7 +37,7 @@ export function addEndpoints(app, endpoints) {
 }
 
 const endpoints = [
-    AddContextEndpoint,
+    SendMessageEndpoint,
     GetHistoryEndpoint
 ];
 
