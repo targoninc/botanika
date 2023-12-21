@@ -81,6 +81,11 @@ body, html {
     outline: none;
 }
 
+.message-image {
+    max-height: 200px;
+    max-width: 200px;
+}
+
 .message.assistant {
     border-left: 5px solid var(--color-6);
 }

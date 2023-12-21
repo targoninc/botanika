@@ -1,5 +1,5 @@
 import {ChatTemplates} from "./templates/ChatTemplates.mjs";
-import {Synthesizer} from "../lib/voice/Synthesizer.mjs";
+import {Synthesizer} from "./Synthesizer.mjs";
 
 export class UiAdapter {
     static addChatMessage(message) {
@@ -52,7 +52,10 @@ export class UiAdapter {
                 break;
             case "assistant-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
-                Synthesizer.speak(res.text);
+                Synthesizer.speak(res.text, res.language);
+                break;
+            case "image":
+                UiAdapter.addChatMessage(ChatTemplates.image(res.url));
                 break;
             default:
                 throw new Error(`Unknown response type: ${res.type}`);

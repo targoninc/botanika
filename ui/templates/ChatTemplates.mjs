@@ -47,4 +47,15 @@ export class ChatTemplates {
                     ).build()
             ).build();
     }
+
+    static image(url) {
+        return FJS.create('div')
+            .classes('message', 'assistant')
+            .children(
+                FJS.create('img')
+                    .classes('message-image')
+                    .src(url)
+                    .build()
+            ).build();
+    }
 }
