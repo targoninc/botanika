@@ -3,12 +3,12 @@ import {Api} from "../Api.mjs";
 import {UiAdapter} from "../UiAdapter.mjs";
 
 export class ChatTemplates {
-    static message(text) {
+    static message(type, text) {
         return FJS.create('div')
-            .classes('message')
+            .classes('message', type)
             .children(
                 FJS.create('div')
-                    .classes('message-text')
+                    .classes('message-text', type)
                     .text(text)
                     .build()
             ).build();
@@ -36,11 +36,10 @@ export class ChatTemplates {
                                     if (input === "") {
                                         return;
                                     }
+                                    UiAdapter.addChatMessage(ChatTemplates.message('user', input));
+                                    UiAdapter.setChatInput("");
                                     Api.SendMessage(input).then((res) => {
-                                        const messages = UiAdapter.getChatMessages();
-                                        messages.appendChild(ChatTemplates.message(input));
-                                        messages.appendChild(ChatTemplates.message(res));
-                                        UiAdapter.setChatInput("");
+                                        UiAdapter.handleResponse(res.filter(r => r.type !== 'message'));
                                     });
                                 }
                             })

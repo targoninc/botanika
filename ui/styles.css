@@ -8,6 +8,15 @@
     --foreground-alt-3: #A6A6A6;
     --neutral: #777;
     --border-radius: 4px;
+    --color-1: #FF5C5C;
+    --color-2: #FFB03B;
+    --color-3: #FFEA3B;
+    --color-4: #A6FF3B;
+    --color-5: #3BFFC4;
+    --color-6: #3B9CFF;
+    --color-7: #A63BFF;
+    --color-8: #FF3BDE;
+    --color-9: #FF3B8C;
 }
 
 body, html {
@@ -15,6 +24,7 @@ body, html {
     margin: 0;
     background: var(--background);
     color: var(--foreground);
+    font-family: sans-serif;
 }
 
 #content {
@@ -26,6 +36,7 @@ body, html {
     background: var(--background-alt);
     width: max-content;
     border-radius: var(--border-radius);
+    max-width: calc(100% - 30px);
 }
 
 .chat-box {
@@ -68,4 +79,12 @@ body, html {
 
 .chat-box-input-field:focus {
     outline: none;
+}
+
+.message.assistant {
+    border-left: 5px solid var(--color-6);
+}
+
+.message.user {
+    border-left: 5px solid var(--color-4);
 }

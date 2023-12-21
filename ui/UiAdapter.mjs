@@ -36,22 +36,22 @@ export class UiAdapter {
         }
         switch (res.type) {
             case "message":
-                UiAdapter.addChatMessage(ChatTemplates.message(res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('user', res.text));
                 break;
             case "history":
                 UiAdapter.clearChatMessages();
                 for (const message of res.messages) {
-                    UiAdapter.addChatMessage(ChatTemplates.message(message));
+                    UiAdapter.addChatMessage(ChatTemplates.message(message.type, message.text));
                 }
                 break;
             case "error":
-                UiAdapter.addChatMessage(ChatTemplates.message(`Error: ${res.message}`));
+                UiAdapter.addChatMessage(ChatTemplates.message('error', res.text));
                 break;
             case "voice-recognition":
-                UiAdapter.addChatMessage(ChatTemplates.message(res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('user', res.text));
                 break;
             case "assistant-response":
-                UiAdapter.addChatMessage(ChatTemplates.message(res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
                 Synthesizer.speak(res.text);
                 break;
             default:
