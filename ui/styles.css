@@ -31,7 +31,7 @@ body, html {
     height: 100%;
 }
 
-.message {
+.text-message {
     padding: 10px;
     background: var(--background-alt);
     width: max-content;

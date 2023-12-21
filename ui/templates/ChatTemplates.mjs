@@ -5,7 +5,7 @@ import {UiAdapter} from "../UiAdapter.mjs";
 export class ChatTemplates {
     static message(type, text) {
         return FJS.create('div')
-            .classes('message', type)
+            .classes('message', 'text-message', type)
             .children(
                 FJS.create('div')
                     .classes('message-text', type)
@@ -50,7 +50,7 @@ export class ChatTemplates {
 
     static image(url) {
         return FJS.create('div')
-            .classes('message', 'assistant')
+            .classes('message', 'image-message', 'assistant')
             .children(
                 FJS.create('img')
                     .classes('message-image')

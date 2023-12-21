@@ -62,8 +62,21 @@ export class VoiceRecorder {
         this.dataInterval && clearInterval(this.dataInterval);
     }
 
+    getAverageVolume(chunks) {
+        let sum = 0;
+        for (let i = 0; i < chunks.length; i++) {
+            sum += chunks[i];
+        }
+        return sum / chunks.length;
+    }
+
     async sendAudio() {
         if (this.audioChunks.length === 0) {
+            return;
+        }
+
+        const averageVolume = this.getAverageVolume(this.audioChunks);
+        if (averageVolume < this.threshold) {
             return;
         }
 
