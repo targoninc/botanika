@@ -1,4 +1,5 @@
 import {ChatTemplates} from "./templates/ChatTemplates.mjs";
+import {Synthesizer} from "../lib/voice/Synthesizer.mjs";
 
 export class UiAdapter {
     static addChatMessage(message) {
@@ -24,6 +25,12 @@ export class UiAdapter {
     }
 
     static handleResponse(res) {
+        if (res.constructor === Array) {
+            for (const r of res) {
+                UiAdapter.handleResponse(r);
+            }
+            return;
+        }
         if (!res.type) {
             throw new Error(`Response type not specified.`);
         }
@@ -42,6 +49,10 @@ export class UiAdapter {
                 break;
             case "voice-recognition":
                 UiAdapter.addChatMessage(ChatTemplates.message(res.text));
+                break;
+            case "assistant-response":
+                UiAdapter.addChatMessage(ChatTemplates.message(res.text));
+                Synthesizer.speak(res.text);
                 break;
             default:
                 throw new Error(`Unknown response type: ${res.type}`);

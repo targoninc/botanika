@@ -69,6 +69,7 @@ export class VoiceRecorder {
 
         this.processing = true;
         const allAudioData = [this.audioHeader, ...this.audioChunks];
+        console.log(this.audioChunks.length);
         const audioBlob = new Blob(allAudioData, {type: 'audio/webm; codecs=opus'});
 
         const formData = new FormData();
@@ -78,6 +79,6 @@ export class VoiceRecorder {
 
         this.audioChunks = [];
         this.processing = false;
-        this.lastDataTime = Date.now();
+        this.lastDataTime = null;
     }
 }
