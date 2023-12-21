@@ -1,5 +1,6 @@
 import {FJS} from "https://fjs.targoninc.com/f.js";
 import {Api} from "../Api.mjs";
+import {UiAdapter} from "../UiAdapter.mjs";
 
 export class ChatTemplates {
     static message(text) {
@@ -27,10 +28,17 @@ export class ChatTemplates {
                             .classes('chat-box-input-field')
                             .onkeydown((e) => {
                                 if (e.key === 'Enter' && e.ctrlKey) {
+                                    const input = UiAdapter.getChatInput();
+                                    if (input === "") {
+                                        return;
+                                    }
                                     Api.AddContext({
-                                        text: e.target.value
+                                        text: input,
                                     }).then((res) => {
-                                        console.log(res);
+                                        const messages = UiAdapter.getChatMessages();
+                                        messages.appendChild(ChatTemplates.message(input));
+                                        messages.appendChild(ChatTemplates.message(res));
+                                        UiAdapter.setChatInput("");
                                     });
                                 }
                             })

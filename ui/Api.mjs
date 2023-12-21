@@ -32,11 +32,11 @@ export class Api {
         }
     }
 
-    static VoiceRecognition(body) {
-        return Api.ParseResponse(Api.POST('/voice-recognition', body));
+    static VoiceRecognition(data, encoding, sampleRateHertz) {
+        return Api.ParseResponse(Api.POST('/voice-recognition', { data, encoding, sampleRateHertz }));
     }
 
-    static AddContext(body) {
-        return Api.ParseResponse(Api.POST('/add-context', body));
+    static AddContext(text) {
+        return Api.ParseResponse(Api.POST('/add-context', { text }));
     }
 }
