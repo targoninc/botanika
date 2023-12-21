@@ -5,10 +5,19 @@ import path from "path";
 import {AddContextEndpoint} from "./lib/endpoints/AddContextEndpoint.mjs";
 import {GetHistoryEndpoint} from "./lib/endpoints/GetHistoryEndpoint.mjs";
 import dotenv from "dotenv";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 dotenv.config();
 const context = {
     history: [],
+}
+const middlewares = {
+    'json': express.json(),
+    'raw': express.raw(),
+    'multipart': express.raw({type: 'multipart/form-data', limit: '10mb'}),
+    'none': (req, res, next) => next()
 }
 
 /**
@@ -17,8 +26,8 @@ const context = {
  * @param endpoint {method, path, handler}
  */
 function addEndpoint(app, endpoint) {
-    const { path, handler } = endpoint;
-    app.use(path, (req, res) => {
+    const { path, handler, middleware } = endpoint;
+    app.use(path, middlewares[middleware], (req, res) => {
         handler(req, res, context);
     });
 }
@@ -28,14 +37,15 @@ export function addEndpoints(app, endpoints) {
 }
 
 const endpoints = [
-    VoiceRecognitionEndpoint,
     AddContextEndpoint,
     GetHistoryEndpoint
 ];
 
 const app = express();
-app.use(express.json());
 addEndpoints(app, endpoints);
+app.use(VoiceRecognitionEndpoint.path, upload.single('file'), (req, res) => {
+    VoiceRecognitionEndpoint.handler(req, res, context);
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

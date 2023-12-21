@@ -10,6 +10,16 @@ export class Api {
         });
     }
 
+    static POSTraw(url, body, headers = {}) {
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                ...headers
+            },
+            body: body
+        });
+    }
+
     static GET(url, headers = {}) {
         return fetch(url, {
             method: 'GET',
@@ -38,8 +48,8 @@ export class Api {
         }
     }
 
-    static async VoiceRecognition(data, encoding, sampleRateHertz) {
-        return await Api.ParseResponse(await Api.POST('/voice-recognition', {data, encoding, sampleRateHertz}));
+    static async VoiceRecognition(data) {
+        return await Api.ParseResponse(await Api.POSTraw('/voice-recognition', data));
     }
 
     static async AddContext(text) {

@@ -35,7 +35,8 @@ export class VoiceRecorder {
         const level = Math.sqrt(sum / input.length);
         this.currentVolume = level;
         if (level > this.threshold) {
-            this.audioChunks.push(event.data);
+            const chunk = input.slice(0);
+            this.audioChunks.push(chunk);
             this.lastDataTime = Date.now();
         } else {
             if (this.lastDataTime && Date.now() - this.lastDataTime > this.timeout) {
@@ -58,7 +59,9 @@ export class VoiceRecorder {
         }
 
         const audioBlob = new Blob(this.audioChunks, {type: 'audio/ogg; codecs=opus'});
-        Api.VoiceRecognition(audioBlob, 'LINEAR16', 16000).then((res) => {
+        const formData = new FormData();
+        formData.append('file', audioBlob);
+        Api.VoiceRecognition(formData).then((res) => {
             const messages = UiAdapter.getChatMessages();
             messages.appendChild(ChatTemplates.message(res));
         });
