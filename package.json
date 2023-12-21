@@ -4,12 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --config webpack.config.js",
+    "server": "node main.mjs",
+    "start": "npm run build && npm run server",
+    "startLocal": "npm run build && npm run server && open http://localhost:3000"
   },
   "private": true,
+  "type": "module",
   "dependencies": {
     "@google-cloud/speech": "^6.1.0",
+    "@targoninc/fjs": "^1.1.8",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "router5": "^8.0.1"
+    "html-webpack-plugin": "^5.6.0",
+    "router5": "^8.0.1",
+    "router5-plugin-browser": "^8.0.1",
+    "webpack": "^5.89.0",
+    "webpack-shell-plugin-next": "^2.3.1"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
   }
 }

@@ -1,0 +1,50 @@
+:root {
+    --background: #111720;
+    --background-alt: #1E2A32;
+    --background-alt-2: #2F3A40;
+    --foreground: #F2F2F2;
+    --foreground-alt: #D9D9D9;
+    --foreground-alt-2: #BFBFBF;
+    --foreground-alt-3: #A6A6A6;
+    --neutral: #777;
+    --border-radius: 4px;
+}
+
+body, html {
+    height: 100%;
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.chat-box {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chat-box-messages {
+    flex-grow: 1;
+    overflow-y: scroll;
+}
+
+.chat-box-input {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--background-alt);
+}
+
+.chat-box-input-field {
+    flex-grow: 1;
+    font-size: 2rem;
+    background: transparent;
+    border-radius: var(--border-radius);
+    border: none;
+    color: var(--foreground);
+}
+
+.chat-box-input-field:focus {
+    outline: none;
+}

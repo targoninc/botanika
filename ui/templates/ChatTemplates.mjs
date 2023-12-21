@@ -1,4 +1,4 @@
-import {FJS} from "https://fjs.targoninc.com/f.js";
+import {FJS} from "@targoninc/fjs";
 import {Api} from "../Api.mjs";
 import {UiAdapter} from "../UiAdapter.mjs";
 
@@ -26,15 +26,14 @@ export class ChatTemplates {
                     .children(
                         FJS.create('input')
                             .classes('chat-box-input-field')
+                            .placeholder('Enter a message...')
                             .onkeydown((e) => {
                                 if (e.key === 'Enter' && e.ctrlKey) {
                                     const input = UiAdapter.getChatInput();
                                     if (input === "") {
                                         return;
                                     }
-                                    Api.AddContext({
-                                        text: input,
-                                    }).then((res) => {
+                                    Api.AddContext(input).then((res) => {
                                         const messages = UiAdapter.getChatMessages();
                                         messages.appendChild(ChatTemplates.message(input));
                                         messages.appendChild(ChatTemplates.message(res));
