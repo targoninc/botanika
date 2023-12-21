@@ -4,25 +4,22 @@ import {ChatTemplates} from "./templates/ChatTemplates.mjs";
 
 export class VoiceRecorder {
     constructor() {
-        this.threshold = 0.05; // define your threshold here
+        this.threshold = 0.05;
         this.timeout = 2000;
         this.silence = true;
-        this.start_time = null;
         this.audioChunks = [];
+        this.timeoutHandle = null;
     }
 
     start() {
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 this.mediaRecorder = new MediaRecorder(stream);
-
                 this.audioContext = new AudioContext();
                 const source = this.audioContext.createMediaStreamSource(stream);
                 const processor = this.audioContext.createScriptProcessor(1024, 1, 1);
-
                 source.connect(processor);
                 processor.connect(this.audioContext.destination);
-
                 processor.onaudioprocess = this.processAudio.bind(this);
                 this.mediaRecorder.start();
             });
@@ -35,19 +32,19 @@ export class VoiceRecorder {
             sum += input[i] * input[i];
         }
         const level = Math.sqrt(sum / input.length);
-
         if (level > this.threshold) {
-            if (this.silence) {
-                this.start_time = Date.now();
-                this.silence = false;
-            }
             this.audioChunks.push(event.data);
-        } else if (!this.silence) {
+            this.silence = false;
+            clearTimeout(this.timeoutHandle);
+            this.timeoutHandle = setTimeout(() => this.checkSend(), this.timeout);
+        } else {
             this.silence = true;
+        }
+    }
 
-            if ((Date.now() - this.start_time) > this.threshold) {
-                this.sendAudio();
-            }
+    checkSend() {
+        if (!this.silence) {
+            this.sendAudio();
             this.audioChunks = [];
         }
     }
