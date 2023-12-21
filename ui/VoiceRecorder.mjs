@@ -4,11 +4,9 @@ import {ChatTemplates} from "./templates/ChatTemplates.mjs";
 
 export class VoiceRecorder {
     constructor() {
-        this.threshold = 0.05;
+        this.threshold = 0.005;
         this.timeout = 2000;
-        this.silence = true;
         this.audioChunks = [];
-        this.timeoutHandle = null;
         this.currentVolume = 0;
     }
 
@@ -22,25 +20,32 @@ export class VoiceRecorder {
                 source.connect(processor);
                 processor.connect(this.audioContext.destination);
                 processor.onaudioprocess = this.processAudio.bind(this);
+
+                this.mediaRecorder.ondataavailable = e => {
+                    this.audioChunks.push(e.data);
+                };
+                this.dataInterval = setInterval(() => {
+                    this.mediaRecorder.requestData();
+                }, 1000);
                 this.mediaRecorder.start();
             });
     }
 
-    processAudio(event) {
+    async processAudio(event) {
         const input = event.inputBuffer.getChannelData(0);
         let sum = 0.0;
-        for(let i = 0; i < input.length; ++i) {
+        for (let i = 0; i < input.length; ++i) {
             sum += input[i] * input[i];
         }
         const level = Math.sqrt(sum / input.length);
         this.currentVolume = level;
         if (level > this.threshold) {
-            const chunk = input.slice(0);
-            this.audioChunks.push(chunk);
             this.lastDataTime = Date.now();
         } else {
-            if (this.lastDataTime && Date.now() - this.lastDataTime > this.timeout) {
-                this.sendAudio();
+            if (this.lastDataTime && Date.now() - this.lastDataTime > this.timeout && !this.processing) {
+                this.processing = true;
+                await this.sendAudio();
+                this.processing = false;
                 this.audioChunks = [];
                 this.lastDataTime = null;
             }
@@ -53,17 +58,16 @@ export class VoiceRecorder {
         }
     }
 
-    sendAudio() {
-        if (!this.audioChunks.length) {
+    async sendAudio() {
+        if (!this.audioChunks.length || this.audioChunks.length === 0) {
             return;
         }
+        console.log('sending audio', this.audioChunks);
 
-        const audioBlob = new Blob(this.audioChunks, {type: 'audio/ogg; codecs=opus'});
+        const audioBlob = new Blob(this.audioChunks, {type: 'audio/webm; codecs=opus'});
         const formData = new FormData();
         formData.append('file', audioBlob);
-        Api.VoiceRecognition(formData).then((res) => {
-            const messages = UiAdapter.getChatMessages();
-            messages.appendChild(ChatTemplates.message(res));
-        });
+        const res = await Api.VoiceRecognition(formData)
+        UiAdapter.handleResponse(res);
     }
 }

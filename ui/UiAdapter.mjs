@@ -40,6 +40,9 @@ export class UiAdapter {
             case "error":
                 UiAdapter.addChatMessage(ChatTemplates.message(`Error: ${res.message}`));
                 break;
+            case "voice-recognition":
+                UiAdapter.addChatMessage(ChatTemplates.message(res.text));
+                break;
             default:
                 throw new Error(`Unknown response type: ${res.type}`);
         }
