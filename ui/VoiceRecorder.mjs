@@ -36,18 +36,13 @@ export class VoiceRecorder {
         this.currentVolume = level;
         if (level > this.threshold) {
             this.audioChunks.push(event.data);
-            this.silence = false;
-            clearTimeout(this.timeoutHandle);
-            this.timeoutHandle = setTimeout(() => this.checkSend(), this.timeout);
+            this.lastDataTime = Date.now();
         } else {
-            this.silence = true;
-        }
-    }
-
-    checkSend() {
-        if (!this.silence) {
-            this.sendAudio();
-            this.audioChunks = [];
+            if (this.lastDataTime && Date.now() - this.lastDataTime > this.timeout) {
+                this.sendAudio();
+                this.audioChunks = [];
+                this.lastDataTime = null;
+            }
         }
     }
 

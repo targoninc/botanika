@@ -4,7 +4,9 @@ import {fileURLToPath} from "url";
 import path from "path";
 import {AddContextEndpoint} from "./lib/endpoints/AddContextEndpoint.mjs";
 import {GetHistoryEndpoint} from "./lib/endpoints/GetHistoryEndpoint.mjs";
+import dotenv from "dotenv";
 
+dotenv.config();
 const context = {
     history: [],
 }
