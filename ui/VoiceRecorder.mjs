@@ -75,11 +75,9 @@ export class VoiceRecorder {
         }
 
         const averageVolume = this.getAverageVolume(this.audioChunks);
-        if (averageVolume < this.threshold * 5) {
+        if (averageVolume < this.threshold) {
             return;
         }
-
-        console.log(averageVolume);
 
         this.processing = true;
         const allAudioData = [this.audioHeader, ...this.audioChunks];
