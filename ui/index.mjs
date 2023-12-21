@@ -1,5 +1,6 @@
 import Router from 'router5';
 import {ChatTemplates} from "./templates/ChatTemplates.mjs";
+import {VoiceRecorder} from "./VoiceRecorder.mjs";
 
 const router = new Router([
     { name: 'chat', path: '/' },
@@ -19,3 +20,6 @@ router.subscribe(({ route }) => {
             break;
     }
 });
+
+const recorder = new VoiceRecorder();
+recorder.start();
