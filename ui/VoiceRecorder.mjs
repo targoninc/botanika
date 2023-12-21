@@ -5,6 +5,7 @@ import {ChatTemplates} from "./templates/ChatTemplates.mjs";
 export class VoiceRecorder {
     constructor() {
         this.threshold = 0.05; // define your threshold here
+        this.timeout = 2000;
         this.silence = true;
         this.start_time = null;
         this.audioChunks = [];
@@ -57,13 +58,13 @@ export class VoiceRecorder {
         }
     }
 
-    async sendAudio() {
+    sendAudio() {
         if (!this.audioChunks.length) {
             return;
         }
 
         const audioBlob = new Blob(this.audioChunks, {type: 'audio/ogg; codecs=opus'});
-        return await Api.VoiceRecognition(audioBlob, 'LINEAR16', 16000).then((res) => {
+        Api.VoiceRecognition(audioBlob, 'LINEAR16', 16000).then((res) => {
             const messages = UiAdapter.getChatMessages();
             messages.appendChild(ChatTemplates.message(res));
         });

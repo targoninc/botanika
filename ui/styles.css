@@ -17,6 +17,10 @@ body, html {
     color: var(--foreground);
 }
 
+#content {
+    height: 100%;
+}
+
 .chat-box {
     height: 100%;
     display: flex;

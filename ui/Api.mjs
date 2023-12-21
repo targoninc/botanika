@@ -20,11 +20,17 @@ export class Api {
         });
     }
 
-    static ParseResponse(res) {
-        if (res.status !== 200) {
-            throw new Error(`Response status code: ${res.status}`);
+    /**
+     *
+     * @param res {Response}
+     * @returns {*}
+     * @constructor
+     */
+    static async ParseResponse(res) {
+        if (res.statusCode !== 200) {
+            throw new Error(`Response status code: ${res.statusCode}`);
         }
-        const text = res.text();
+        const text = await res.text();
         try {
             return JSON.parse(text);
         } catch (e) {
@@ -32,11 +38,11 @@ export class Api {
         }
     }
 
-    static VoiceRecognition(data, encoding, sampleRateHertz) {
-        return Api.ParseResponse(Api.POST('/voice-recognition', { data, encoding, sampleRateHertz }));
+    static async VoiceRecognition(data, encoding, sampleRateHertz) {
+        return await Api.ParseResponse(await Api.POST('/voice-recognition', {data, encoding, sampleRateHertz}));
     }
 
-    static AddContext(text) {
-        return Api.ParseResponse(Api.POST('/add-context', { text }));
+    static async AddContext(text) {
+        return await Api.ParseResponse(await Api.POST('/add-context', {text}));
     }
 }
