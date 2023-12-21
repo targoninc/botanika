@@ -8,6 +8,7 @@ export class VoiceRecorder {
         this.timeout = 2000;
         this.audioChunks = [];
         this.currentVolume = 0;
+        this.sum = 0.0;
     }
 
     start() {
@@ -48,9 +49,11 @@ export class VoiceRecorder {
         this.currentVolume = level;
         if (level > this.threshold) {
             this.lastDataTime = Date.now();
+            this.sum += level;
         } else {
             if (this.lastDataTime && Date.now() - this.lastDataTime > this.timeout && !this.processing) {
                 await this.sendAudio();
+                this.sum = 0.0;
             }
         }
     }
@@ -63,11 +66,7 @@ export class VoiceRecorder {
     }
 
     getAverageVolume(chunks) {
-        let sum = 0;
-        for (let i = 0; i < chunks.length; i++) {
-            sum += chunks[i];
-        }
-        return sum / chunks.length;
+        return this.sum / chunks.length;
     }
 
     async sendAudio() {
@@ -76,9 +75,11 @@ export class VoiceRecorder {
         }
 
         const averageVolume = this.getAverageVolume(this.audioChunks);
-        if (averageVolume < this.threshold * 10) {
+        if (averageVolume < this.threshold * 5) {
             return;
         }
+
+        console.log(averageVolume);
 
         this.processing = true;
         const allAudioData = [this.audioHeader, ...this.audioChunks];
