@@ -44,4 +44,14 @@ export class Api {
         }
         return await res.data;
     }
+
+    static async resetContext() {
+        const res = await axios.post(`/api/reset-context`, {}, {
+            withCredentials: true
+        });
+        if (res.status !== 200) {
+            throw new Error(`Failed to reset context: ${res.status}`);
+        }
+        return await res.data;
+    }
 }

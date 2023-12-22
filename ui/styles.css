@@ -102,6 +102,11 @@ body, html {
     font-size: 0.8rem;
 }
 
+.message.data {
+    font-family: monospace;
+    font-size: 0.8rem;
+}
+
 .flex, .flex-v {
     display: flex;
     gap: var(--gap);
@@ -129,6 +134,10 @@ body, html {
 
 button {
     cursor: pointer;
+}
+
+button:hover {
+    background: var(--background-alt-2);
 }
 
 .login-error {

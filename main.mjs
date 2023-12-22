@@ -164,6 +164,11 @@ app.get("/api/isAuthorized", (req, res) => {
     res.send({});
 });
 
+app.post("/api/reset-context", checkAuthenticated, (req, res) => {
+    contextMap[req.sessionID] = Context.generate(req.user);
+    res.send({context: contextMap[req.sessionID]});
+});
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use("/", express.static(path.join(__dirname, "dist")));

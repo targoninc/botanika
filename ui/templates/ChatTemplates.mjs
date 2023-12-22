@@ -23,12 +23,26 @@ export class ChatTemplates {
                 FJS.create('div')
                     .classes('loudness-bar')
                     .build(),
-                FJS.create("button")
-                    .text(`Logout ${context.user.name}`)
-                    .onclick(async () => {
-                        await Auth.logout();
-                        router.navigate("login");
-                    }).build(),
+                FJS.create('div')
+                    .classes("flex")
+                    .children(
+                        FJS.create("button")
+                            .text(`Logout ${context.user.name}`)
+                            .onclick(async () => {
+                                await Auth.logout();
+                                router.navigate("login");
+                            }).build(),
+                        FJS.create("button")
+                            .text(`New chat`)
+                            .onclick(async () => {
+                                const res = await Api.resetContext();
+                                if (res) {
+                                    UiAdapter.setChatInput("");
+                                    UiAdapter.clearChatMessages();
+                                    UiAdapter.addChatMessage(ChatTemplates.message('system', "New chat started"));
+                                }
+                            }).build(),
+                    ).build(),
                 FJS.create('div')
                     .classes('chat-box-messages')
                     .build(),

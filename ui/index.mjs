@@ -27,6 +27,7 @@ router.subscribe(async ({route}) => {
             }
             content.innerHTML = "";
             content.appendChild(ChatTemplates.chatBox(router, state.context));
+            UiAdapter.addChatMessage(ChatTemplates.message('system', "New chat started"));
             break;
         case 'login':
             if (state.user) {
