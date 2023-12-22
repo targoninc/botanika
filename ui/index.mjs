@@ -18,18 +18,18 @@ router.usePlugin(browserPlugin());
 router.subscribe(async ({route}) => {
     const content = document.getElementById('content');
     console.log(`Route changed to ${route.name}`);
-    const user = await Auth.user();
+    const state = await Auth.userState();
     switch (route.name) {
         case 'chat':
-            if (!user) {
+            if (!state.user) {
                 router.navigate('login');
                 break;
             }
             content.innerHTML = "";
-            content.appendChild(ChatTemplates.chatBox(router));
+            content.appendChild(ChatTemplates.chatBox(router, state.context));
             break;
         case 'login':
-            if (user) {
+            if (state.user) {
                 router.navigate('chat');
                 break;
             }

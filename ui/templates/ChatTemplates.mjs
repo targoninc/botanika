@@ -16,7 +16,7 @@ export class ChatTemplates {
             ).build();
     }
 
-    static chatBox(router) {
+    static chatBox(router, context) {
         return FJS.create('div')
             .classes('chat-box')
             .children(
@@ -24,7 +24,7 @@ export class ChatTemplates {
                     .classes('loudness-bar')
                     .build(),
                 FJS.create("button")
-                    .text("Logout")
+                    .text(`Logout ${context.user.name}`)
                     .onclick(async () => {
                         await Auth.logout();
                         router.navigate("login");

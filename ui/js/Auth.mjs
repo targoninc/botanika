@@ -2,13 +2,8 @@ import {Api} from "./Api.mjs";
 import {UiAdapter} from "./UiAdapter.mjs";
 
 export class Auth {
-    static async user() {
-        const res = await Api.isAuthorized();
-        if (res.user) {
-            return res.user;
-        }
-
-        return null;
+    static async userState() {
+        return await Api.isAuthorized();
     }
 
     static async authorizeFromForm(router) {
@@ -19,7 +14,7 @@ export class Auth {
                 UiAdapter.showLoginError(res.error);
                 return;
             }
-            router.navigate("search");
+            router.navigate("chat");
         });
     }
 

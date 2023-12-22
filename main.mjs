@@ -131,7 +131,7 @@ app.post("/api/authorize", async (req, res, next) => {
             if (!existing) {
                 outUser.justRegistered = true;
             }
-            contextMap[req.sessionID] = Context.generate(user.displayname);
+            contextMap[req.sessionID] = Context.generate(user);
             return res.send({
                 user: outUser
             });
@@ -158,7 +158,7 @@ app.post("/api/logout", (req, res) => {
 
 app.get("/api/isAuthorized", (req, res) => {
     if (req.isAuthenticated()) {
-        res.send({user: req.user});
+        res.send({user: req.user, context: contextMap[req.sessionID]});
         return;
     }
     res.send({});
