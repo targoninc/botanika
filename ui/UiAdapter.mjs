@@ -49,7 +49,7 @@ export class UiAdapter {
                 break;
             case "assistant-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
-                Synthesizer.speak(res.text, res.language);
+                Synthesizer.speak(res.text, window.language);
                 break;
             case "system-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));

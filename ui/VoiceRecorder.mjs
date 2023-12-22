@@ -86,7 +86,8 @@ export class VoiceRecorder {
         const formData = new FormData();
         formData.append('file', audioBlob);
         const res = await Api.VoiceRecognition(formData);
-        UiAdapter.handleResponse(res);
+        window.language = res.context.user.language;
+        UiAdapter.handleResponse(res.responses);
 
         this.audioChunks = [];
         this.processing = false;
