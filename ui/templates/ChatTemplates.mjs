@@ -58,7 +58,7 @@ export class ChatTemplates {
                             ).build(),
                         FJS.create('tbody')
                             .children(
-                                ...data.slice(1).map((row) => {
+                                ...data.map((row) => {
                                     return FJS.create('tr')
                                         .children(
                                             ...Object.values(row).map((col) => {
