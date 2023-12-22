@@ -16,6 +16,7 @@ export class UserTemplates {
                         FJS.create("input")
                             .id("username")
                             .name("username")
+                            .autocomplete("username")
                             .type("text")
                             .build()
                     ).build(),
@@ -29,6 +30,7 @@ export class UserTemplates {
                         FJS.create("input")
                             .id("password")
                             .name("password")
+                            .autocomplete("current-password")
                             .type("password")
                             .build()
                     ).build(),
