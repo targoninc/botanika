@@ -5,15 +5,85 @@ import {UserTemplates} from "./UserTemplates.mjs";
 import {Auth} from "../js/Auth.mjs";
 
 export class ChatTemplates {
-    static message(type, text) {
+    static message(type, text, buttons = []) {
         return FJS.create('div')
-            .classes('message', 'text-message', type)
+            .classes('message', 'text-message', 'flex-v', type)
             .children(
+                FJS.create('div')
+                    .classes('flex')
+                    .children(
+                        ...buttons
+                    ).build(),
                 FJS.create('div')
                     .classes('message-text', type)
                     .text(text)
                     .build()
             ).build();
+    }
+
+    static data(text) {
+        const buttons = [
+            FJS.create('button')
+                .text('Download')
+                .onclick(() => {
+                    const blob = new Blob([text], {type: 'text/plain'});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'data.txt';
+                    a.click();
+                }).build(),
+            FJS.create('button')
+                .text('Copy')
+                .onclick(() => {
+                    navigator.clipboard.writeText(text);
+                }).build()
+        ];
+        try {
+            const data = JSON.parse(text);
+            if (data.constructor === Array) {
+                const table = FJS.create('table')
+                    .classes('data-table')
+                    .children(
+                        FJS.create('thead')
+                            .children(
+                                FJS.create('tr')
+                                    .children(
+                                        data[0].map((col) => {
+                                            return FJS.create('th')
+                                                .text(col)
+                                                .build();
+                                        })
+                                    ).build()
+                            ).build(),
+                        FJS.create('tbody')
+                            .children(
+                                data.slice(1).map((row) => {
+                                    return FJS.create('tr')
+                                        .children(
+                                            row.map((col) => {
+                                                return FJS.create('td')
+                                                    .text(col)
+                                                    .build();
+                                            })
+                                        ).build();
+                                })
+                            ).build()
+                    ).build();
+                return FJS.create('div')
+                    .classes('message', 'data-message', 'assistant', "flex-v")
+                    .children(
+                        FJS.create('div')
+                            .classes('flex')
+                            .children(
+                                ...buttons
+                            ).build(),
+                        table
+                    ).build();
+            }
+        } catch (e) {
+            return ChatTemplates.message('data', text, buttons);
+        }
     }
 
     static chatBox(router, context) {

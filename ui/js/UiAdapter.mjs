@@ -53,7 +53,7 @@ export class UiAdapter {
                 break;
             case "assistant-data":
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', "I have some data for you:"));
-                UiAdapter.addChatMessage(ChatTemplates.message('data', res.text));
+                UiAdapter.addChatMessage(ChatTemplates.data(res.text));
                 break;
             case "system-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
