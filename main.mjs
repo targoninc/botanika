@@ -6,13 +6,12 @@ import {SendMessageEndpoint} from "./lib/endpoints/SendMessageEndpoint.mjs";
 import {GetHistoryEndpoint} from "./lib/endpoints/GetHistoryEndpoint.mjs";
 import dotenv from "dotenv";
 import multer from "multer";
+import {Context} from "./lib/context/Context.mjs";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 dotenv.config();
-const context = {
-    history: [],
-}
+const context = Context.generate();
 const middlewares = {
     'json': express.json(),
     'raw': express.raw(),
