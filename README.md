@@ -6,6 +6,8 @@
   - MYSQL_URL
   - MYSQL_USER
   - MYSQL_PASSWORD
+- Add the following variable to the `.env` file to set the session secret (can be any string):
+  - SESSION_SECRET
     
 # Run
 

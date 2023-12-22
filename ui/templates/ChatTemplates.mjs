@@ -23,7 +23,7 @@ export class ChatTemplates {
     }
 
     static tableCell(text) {
-        if (text.startsWith("http")) {
+        if (text && text.toString().startsWith("http")) {
             return FJS.create('td')
                 .children(
                     FJS.create('a')
