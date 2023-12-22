@@ -67,17 +67,11 @@ body, html {
 .chat-box-input {
     display: flex;
     align-items: center;
-    padding: 0.5rem;
-    background: var(--background-alt);
 }
 
 .chat-box-input-field {
     flex-grow: 1;
     font-size: 2rem;
-    background: transparent;
-    border-radius: var(--border-radius);
-    border: none;
-    color: var(--foreground);
 }
 
 .chat-box-input-field:focus {
