@@ -93,3 +93,14 @@ body, html {
 .message.user {
     border-left: 5px solid var(--color-4);
 }
+
+.message.error {
+    border-left: 5px solid var(--color-1);
+}
+
+.message.system {
+    padding: 0;
+    background: transparent;
+    color: var(--color-6);
+    font-size: 0.8rem;
+}

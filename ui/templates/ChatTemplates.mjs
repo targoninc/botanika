@@ -39,7 +39,7 @@ export class ChatTemplates {
                                     UiAdapter.addChatMessage(ChatTemplates.message('user', input));
                                     UiAdapter.setChatInput("");
                                     Api.SendMessage(input).then((res) => {
-                                        UiAdapter.handleResponse(res.filter(r => r.type !== 'message'));
+                                        UiAdapter.handleResponse(res.filter(r => r.type !== 'user-message'));
                                     });
                                 }
                             })

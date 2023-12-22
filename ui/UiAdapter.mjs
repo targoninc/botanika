@@ -35,9 +35,6 @@ export class UiAdapter {
             throw new Error(`Response type not specified.`);
         }
         switch (res.type) {
-            case "message":
-                UiAdapter.addChatMessage(ChatTemplates.message('user', res.text));
-                break;
             case "history":
                 UiAdapter.clearChatMessages();
                 for (const message of res.messages) {
@@ -47,12 +44,15 @@ export class UiAdapter {
             case "error":
                 UiAdapter.addChatMessage(ChatTemplates.message('error', res.text));
                 break;
-            case "voice-recognition":
+            case "user-message":
                 UiAdapter.addChatMessage(ChatTemplates.message('user', res.text));
                 break;
             case "assistant-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
                 Synthesizer.speak(res.text, res.language);
+                break;
+            case "system-response":
+                UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
                 break;
             case "image":
                 UiAdapter.addChatMessage(ChatTemplates.image(res.url));
