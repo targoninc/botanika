@@ -25,10 +25,10 @@ export class UiAdapter {
         document.querySelector('.chat-box-input-field').value = value;
     }
 
-    static handleResponse(res) {
+    static handleMessages(res, noAction = false) {
         if (res.constructor === Array) {
             for (const r of res) {
-                UiAdapter.handleResponse(r);
+                UiAdapter.handleMessages(r, noAction);
             }
             return;
         }
@@ -50,13 +50,21 @@ export class UiAdapter {
                 break;
             case "assistant-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
-                Synthesizer.speak(res.text, window.language);
+                if (!noAction) {
+                    Synthesizer.speak(res.text, window.language);
+                }
                 break;
             case "assistant-data":
                 UiAdapter.addChatMessage(ChatTemplates.data(res.text));
                 break;
             case "system-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
+                break;
+            case "open-command":
+                UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
+                if (!noAction) {
+                    window.open(res.url, '_blank');
+                }
                 break;
             case "image":
                 UiAdapter.addChatMessage(ChatTemplates.image(res.url));

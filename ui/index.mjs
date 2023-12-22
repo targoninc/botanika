@@ -28,7 +28,7 @@ router.subscribe(async ({route}) => {
             content.innerHTML = "";
             content.appendChild(ChatTemplates.chatBox(router, state.context));
             const history = state.context.history;
-            UiAdapter.handleResponse(history);
+            UiAdapter.handleMessages(history, true);
             UiAdapter.addChatMessage(ChatTemplates.message('system', "Welcome!"));
             break;
         case 'login':

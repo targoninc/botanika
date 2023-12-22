@@ -91,7 +91,7 @@ export class VoiceRecorder {
             return;
         }
         window.language = res.context.user.language;
-        UiAdapter.handleResponse(res.responses);
+        UiAdapter.handleMessages(res.responses, false);
 
         this.audioChunks = [];
         this.processing = false;

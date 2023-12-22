@@ -163,7 +163,7 @@ export class ChatTemplates {
                                             return;
                                         }
                                         window.language = res.context.user.language;
-                                        UiAdapter.handleResponse(res.responses.filter(r => r.type !== 'user-message'));
+                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), false);
                                     });
                                 }
                             })
