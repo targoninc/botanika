@@ -1,4 +1,4 @@
-import {ChatTemplates} from "./templates/ChatTemplates.mjs";
+import {ChatTemplates} from "../templates/ChatTemplates.mjs";
 import {Synthesizer} from "./Synthesizer.mjs";
 
 export class UiAdapter {

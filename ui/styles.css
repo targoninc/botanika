@@ -104,3 +104,28 @@ body, html {
     color: var(--color-6);
     font-size: 0.8rem;
 }
+
+.flex, .flex-v {
+    display: flex;
+    gap: 5px;
+}
+
+.align-content {
+    align-items: center;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.flex-v {
+    flex-direction: column;
+}
+
+.padded {
+    padding: 10px;
+}
+
+.rounded {
+    border-radius: var(--border-radius);
+}

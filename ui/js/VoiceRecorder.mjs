@@ -1,6 +1,6 @@
 import {Api} from "./Api.mjs";
 import {UiAdapter} from "./UiAdapter.mjs";
-import {ChatTemplates} from "./templates/ChatTemplates.mjs";
+import {ChatTemplates} from "../templates/ChatTemplates.mjs";
 
 export class VoiceRecorder {
     constructor() {

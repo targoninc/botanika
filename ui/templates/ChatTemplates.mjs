@@ -1,6 +1,6 @@
 import {FJS} from "@targoninc/fjs";
-import {Api} from "../Api.mjs";
-import {UiAdapter} from "../UiAdapter.mjs";
+import {Api} from "../js/Api.mjs";
+import {UiAdapter} from "../js/UiAdapter.mjs";
 
 export class ChatTemplates {
     static message(type, text) {
