@@ -22,6 +22,22 @@ export class ChatTemplates {
             ).build();
     }
 
+    static tableCell(text) {
+        if (text.startsWith("http")) {
+            return FJS.create('td')
+                .children(
+                    FJS.create('a')
+                        .href(text)
+                        .target('_blank')
+                        .text(text)
+                        .build()
+                ).build();
+        }
+        return FJS.create('td')
+            .text(text)
+            .build();
+    }
+
     static data(text) {
         const json = FormatParser.toJson(text);
         const csv = FormatParser.toCsv(text);
@@ -74,9 +90,7 @@ export class ChatTemplates {
                                     return FJS.create('tr')
                                         .children(
                                             ...Object.values(row).map((col) => {
-                                                return FJS.create('td')
-                                                    .text(col)
-                                                    .build();
+                                                return ChatTemplates.tableCell(col);
                                             })
                                         ).build();
                                 })
