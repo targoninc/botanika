@@ -2,9 +2,10 @@ import axios from 'axios';
 
 export class Api {
     static async VoiceRecognition(data) {
-        return await axios.post('/api/voice-recognition', data, {
+        const res = await axios.post('/api/voice-recognition', data, {
             withCredentials: true
         });
+        return res.data;
     }
 
     static async SendMessage(text) {
