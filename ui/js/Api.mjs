@@ -1,40 +1,16 @@
 import axios from 'axios';
 
 export class Api {
-    static POSTraw(url, body, headers = {}) {
-        return fetch(url, {
-            method: 'POST',
-            headers: {
-                ...headers
-            },
-            body: body
+    static async VoiceRecognition(data) {
+        return await axios.post('/api/voice-recognition', data, {
+            withCredentials: true
         });
     }
 
-    /**
-     *
-     * @param res {Response}
-     * @returns {*}
-     * @constructor
-     */
-    static async ParseResponse(res) {
-        if (res.status !== 200) {
-            throw new Error(`Response status code: ${res.status}`);
-        }
-        const text = await res.text();
-        try {
-            return JSON.parse(text);
-        } catch (e) {
-            return text;
-        }
-    }
-
-    static async VoiceRecognition(data) {
-        return await Api.ParseResponse(await Api.POSTraw('/api/voice-recognition', data));
-    }
-
     static async SendMessage(text) {
-        const res = await axios.post('/api/send-message', {text});
+        const res = await axios.post('/api/send-message', {text}, {
+            withCredentials: true
+        });
         return res.data;
     }
 

@@ -32,7 +32,7 @@ const middlewares = {
  */
 function addEndpoint(app, endpoint) {
     const { path, handler, middleware } = endpoint;
-    app.use('/api' + path, checkAuthenticated, middlewares[middleware], (req, res) => {
+    app.use('/api' + path, middlewares[middleware], checkAuthenticated, (req, res) => {
         handler(req, res, context);
     });
 }
@@ -76,6 +76,7 @@ passport.use(new LocalStrategy(
         if (!bcrypt.compareSync(password, user.password_hash)) {
             return done(null, false, {message: "Incorrect password."});
         }
+        delete user.password_hash;
         return done(null, user);
     }
 ));
@@ -86,6 +87,7 @@ passport.serializeUser(function (user, done) {
 
 passport.deserializeUser(async (id, done) => {
     const user = await db.getUserById(id);
+    delete user.password_hash;
     done(null, user);
 });
 
@@ -97,7 +99,6 @@ function checkAuthenticated(req, res, next) {
 }
 
 app.post("/api/authorize", middlewares.json, async (req, res, next) => {
-    console.log(req.body);
     const cleanUsername = req.body.username.toLowerCase();
     if (cleanUsername.length < 3) {
         return res.send({error: "Username must be at least 3 characters long"});

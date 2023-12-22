@@ -64,6 +64,9 @@ export class UiAdapter {
 
     static updateLoudness(loudness) {
         const loudnessBar = document.querySelector('.loudness-bar');
+        if (!loudnessBar) {
+            return;
+        }
         loudnessBar.style.width = `${loudness * 100}%`;
     }
 }

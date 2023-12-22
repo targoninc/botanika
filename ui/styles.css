@@ -17,6 +17,8 @@
     --color-7: #A63BFF;
     --color-8: #FF3BDE;
     --color-9: #FF3B8C;
+    --input-padding: 0.5rem 1rem;
+    --gap: 5px;
 }
 
 body, html {
@@ -40,10 +42,12 @@ body, html {
 }
 
 .chat-box {
-    height: 100%;
+    height: calc(100% - 20px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding: 10px;
+    gap: var(--gap);
 }
 
 .loudness-bar {
@@ -57,8 +61,7 @@ body, html {
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    padding: 10px;
+    gap: var(--gap);
 }
 
 .chat-box-input {
@@ -107,7 +110,7 @@ body, html {
 
 .flex, .flex-v {
     display: flex;
-    gap: 5px;
+    gap: var(--gap);
 }
 
 .align-content {
@@ -128,4 +131,21 @@ body, html {
 
 .rounded {
     border-radius: var(--border-radius);
+}
+
+button, input, textarea {
+    width: max-content;
+    border: 1px solid var(--foreground-alt-3);
+    border-radius: var(--border-radius);
+    background: var(--background-alt);
+    color: var(--foreground);
+    padding: var(--input-padding);
+}
+
+input {
+    padding: var(--input-padding);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--foreground-alt-3);
+    background: var(--background-alt);
+    color: var(--foreground);
 }

@@ -1,6 +1,8 @@
 import {FJS} from "@targoninc/fjs";
 import {Api} from "../js/Api.mjs";
 import {UiAdapter} from "../js/UiAdapter.mjs";
+import {UserTemplates} from "./UserTemplates.mjs";
+import {Auth} from "../js/Auth.mjs";
 
 export class ChatTemplates {
     static message(type, text) {
@@ -14,13 +16,19 @@ export class ChatTemplates {
             ).build();
     }
 
-    static chatBox() {
+    static chatBox(router) {
         return FJS.create('div')
             .classes('chat-box')
             .children(
                 FJS.create('div')
                     .classes('loudness-bar')
                     .build(),
+                FJS.create("button")
+                    .text("Logout")
+                    .onclick(async () => {
+                        await Auth.logout();
+                        router.navigate("login");
+                    }).build(),
                 FJS.create('div')
                     .classes('chat-box-messages')
                     .build(),

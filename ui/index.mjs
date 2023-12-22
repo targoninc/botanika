@@ -26,7 +26,7 @@ router.subscribe(async ({route}) => {
                 break;
             }
             content.innerHTML = "";
-            content.appendChild(ChatTemplates.chatBox());
+            content.appendChild(ChatTemplates.chatBox(router));
             break;
         case 'login':
             if (user) {
