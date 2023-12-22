@@ -24,9 +24,13 @@ Without the quired variables the features will not work.
 
 ## OpenAI
 
+[Get API key](https://platform.openai.com/api-keys)
+
 - OPENAI_API_KEY
 
 ## OpenWeather
+
+[Get API key](https://home.openweathermap.org/api_keys)
 
 - OPENWEATHER_API_KEY
 
