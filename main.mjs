@@ -27,7 +27,12 @@ const contextMap = {};
 function addEndpoint(app, endpoint) {
     const { path, handler } = endpoint;
     app.post('/api' + path, checkAuthenticated, (req, res) => {
-        handler(req, res, contextMap[req.sessionID]);
+        handler(req, res, contextMap[req.sessionID]).then(() => {
+            if (contextMap[req.sessionID].modified) {
+                contextMap[req.sessionID].modified = false;
+                db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
+            }
+        });
     });
 }
 
@@ -50,7 +55,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session({}));
 app.post('/api' + VoiceRecognitionEndpoint.path, checkAuthenticated, upload.single('file'), (req, res) => {
-    VoiceRecognitionEndpoint.handler(req, res, contextMap[req.sessionID]);
+    VoiceRecognitionEndpoint.handler(req, res, contextMap[req.sessionID]).then(() => {
+        if (contextMap[req.sessionID].modified) {
+            contextMap[req.sessionID].modified = false;
+            db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
+        }
+    });
 });
 app.use(express.json());
 addEndpoints(app, endpoints);
@@ -120,7 +130,7 @@ app.post("/api/authorize", async (req, res, next) => {
         if (!user) {
             return res.send({error: "Invalid username or password"});
         }
-        req.logIn(user, function (err) {
+        req.logIn(user, async function (err) {
             if (err) {
                 return next(err);
             }
@@ -131,7 +141,14 @@ app.post("/api/authorize", async (req, res, next) => {
             if (!existing) {
                 outUser.justRegistered = true;
             }
-            contextMap[req.sessionID] = Context.generate(user);
+            const dbContext = await db.getContext(user.id);
+            if (dbContext) {
+                contextMap[req.sessionID] = JSON.parse(dbContext.object);
+                contextMap[req.sessionID] = Context.updateGeneral(contextMap[req.sessionID]);
+                await db.updateContext(user.id, JSON.stringify(contextMap[req.sessionID]));
+            } else {
+                contextMap[req.sessionID] = Context.generate(user);
+            }
             return res.send({
                 user: outUser
             });
@@ -164,8 +181,9 @@ app.get("/api/isAuthorized", (req, res) => {
     res.send({});
 });
 
-app.post("/api/reset-context", checkAuthenticated, (req, res) => {
-    contextMap[req.sessionID] = Context.generate(req.user);
+app.post("/api/reset-context", checkAuthenticated, async (req, res) => {
+    contextMap[req.sessionID].history = [];
+    await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     res.send({context: contextMap[req.sessionID]});
 });
 
