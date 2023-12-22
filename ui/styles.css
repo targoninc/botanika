@@ -44,7 +44,8 @@ body, html {
 .data-message {
     background: var(--background-alt);
     overflow: auto;
-    height: 50vh;
+    max-height: 50vh;
+    height: max-content;
 }
 
 .chat-box {
