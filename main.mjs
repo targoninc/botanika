@@ -18,12 +18,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 dotenv.config();
 const context = Context.generate();
-const middlewares = {
-    'json': express.json(),
-    'raw': express.raw(),
-    'multipart': express.raw({type: 'multipart/form-data', limit: '10mb'}),
-    'none': (req, res, next) => next()
-}
 
 /**
  *
@@ -31,8 +25,8 @@ const middlewares = {
  * @param endpoint {method, path, handler}
  */
 function addEndpoint(app, endpoint) {
-    const { path, handler, middleware } = endpoint;
-    app.use('/api' + path, middlewares[middleware], checkAuthenticated, (req, res) => {
+    const { path, handler } = endpoint;
+    app.post('/api' + path, checkAuthenticated, (req, res) => {
         handler(req, res, context);
     });
 }
@@ -47,16 +41,6 @@ const endpoints = [
 ];
 
 const app = express();
-addEndpoints(app, endpoints);
-app.use('/api' + VoiceRecognitionEndpoint.path, checkAuthenticated, upload.single('file'), (req, res) => {
-    VoiceRecognitionEndpoint.handler(req, res, context);
-});
-
-const db_url = process.env.MYSQL_URL.toString();
-console.log(`Connecting to database at url ${db_url}...`);
-const db = new DB(process.env.MYSQL_URL);
-await db.connect();
-
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -65,6 +49,16 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session({}));
+app.post('/api' + VoiceRecognitionEndpoint.path, checkAuthenticated, upload.single('file'), (req, res) => {
+    VoiceRecognitionEndpoint.handler(req, res, context);
+});
+app.use(express.json());
+addEndpoints(app, endpoints);
+
+const db_url = process.env.MYSQL_URL.toString();
+console.log(`Connecting to database at url ${db_url}...`);
+const db = new DB(process.env.MYSQL_URL);
+await db.connect();
 
 const LocalStrategy = passportLocal.Strategy;
 passport.use(new LocalStrategy(
@@ -76,7 +70,6 @@ passport.use(new LocalStrategy(
         if (!bcrypt.compareSync(password, user.password_hash)) {
             return done(null, false, {message: "Incorrect password."});
         }
-        delete user.password_hash;
         return done(null, user);
     }
 ));
@@ -98,7 +91,7 @@ function checkAuthenticated(req, res, next) {
     res.send({error: "Not authenticated"});
 }
 
-app.post("/api/authorize", middlewares.json, async (req, res, next) => {
+app.post("/api/authorize", async (req, res, next) => {
     const cleanUsername = req.body.username.toLowerCase();
     if (cleanUsername.length < 3) {
         return res.send({error: "Username must be at least 3 characters long"});
@@ -140,7 +133,7 @@ app.post("/api/authorize", middlewares.json, async (req, res, next) => {
     })(req, res, next);
 });
 
-app.post("/api/logout", middlewares.json, (req, res) => {
+app.post("/api/logout", (req, res) => {
     req.logout(() => {
         const isHttps = req.headers['x-forwarded-proto'] === 'https';
 
@@ -155,7 +148,7 @@ app.post("/api/logout", middlewares.json, (req, res) => {
     });
 });
 
-app.get("/api/isAuthorized", middlewares.json, (req, res) => {
+app.get("/api/isAuthorized", (req, res) => {
     if (req.isAuthenticated()) {
         res.send({user: req.user});
         return;

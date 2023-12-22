@@ -86,6 +86,10 @@ export class VoiceRecorder {
         const formData = new FormData();
         formData.append('file', audioBlob);
         const res = await Api.VoiceRecognition(formData);
+        if (res.error) {
+            UiAdapter.addChatMessage(ChatTemplates.message('error', res.error));
+            return;
+        }
         window.language = res.context.user.language;
         UiAdapter.handleResponse(res.responses);
 
