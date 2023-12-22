@@ -3,6 +3,7 @@ import {Api} from "../js/Api.mjs";
 import {UiAdapter} from "../js/UiAdapter.mjs";
 import {UserTemplates} from "./UserTemplates.mjs";
 import {Auth} from "../js/Auth.mjs";
+import {FormatParser} from "../js/FormatParser.mjs";
 
 export class ChatTemplates {
     static message(type, text, buttons = []) {
@@ -22,15 +23,27 @@ export class ChatTemplates {
     }
 
     static data(text) {
+        const json = FormatParser.toJson(text);
+        const csv = FormatParser.toCsv(text);
         const buttons = [
             FJS.create('button')
-                .text('Download')
+                .text('JSON')
                 .onclick(() => {
-                    const blob = new Blob([text], {type: 'text/plain'});
+                    const blob = new Blob([json], {type: 'text/plain'});
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'data.txt';
+                    a.download = 'data.json';
+                    a.click();
+                }).build(),
+            FJS.create('button')
+                .text('CSV')
+                .onclick(() => {
+                    const blob = new Blob([csv], {type: 'text/plain'});
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'data.csv';
                     a.click();
                 }).build(),
             FJS.create('button')
@@ -40,8 +53,7 @@ export class ChatTemplates {
                 }).build()
         ];
         try {
-            const data = JSON.parse(text);
-            if (data.constructor === Array) {
+            if (json.constructor === Array) {
                 const table = FJS.create('table')
                     .classes('data-table')
                     .children(
@@ -49,7 +61,7 @@ export class ChatTemplates {
                             .children(
                                 FJS.create('tr')
                                     .children(
-                                        ...Object.keys(data[0]).map((col) => {
+                                        ...Object.keys(json[0]).map((col) => {
                                             return FJS.create('th')
                                                 .text(col)
                                                 .build();
@@ -58,7 +70,7 @@ export class ChatTemplates {
                             ).build(),
                         FJS.create('tbody')
                             .children(
-                                ...data.map((row) => {
+                                ...json.map((row) => {
                                     return FJS.create('tr')
                                         .children(
                                             ...Object.values(row).map((col) => {
