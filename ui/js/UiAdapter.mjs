@@ -5,6 +5,7 @@ export class UiAdapter {
     static addChatMessage(message) {
         const messages = document.querySelector('.chat-box-messages');
         messages.appendChild(message);
+        message.scrollIntoView();
     }
 
     static clearChatMessages() {
