@@ -33,12 +33,17 @@ body, html {
     height: 100%;
 }
 
-.text-message {
+.text-message, .data-message {
     padding: 10px;
     background: var(--background-alt);
     width: max-content;
     border-radius: var(--border-radius);
     max-width: calc(100% - 30px);
+}
+
+.data-message {
+    background: var(--background-alt);
+    overflow: auto;
 }
 
 .chat-box {
@@ -160,4 +165,31 @@ input {
     border: 1px solid var(--foreground-alt-3);
     background: var(--background-alt);
     color: var(--foreground);
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: monospace;
+}
+
+table, th, td {
+    border: 1px solid var(--foreground-alt-3);
+}
+
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+
+th {
+    background: var(--background-alt);
+}
+
+tr:nth-child(even) {
+    background-color: var(--background-alt-2);
+}
+
+tr:hover {
+    background-color: var(--background-alt);
 }
