@@ -1,4 +1,5 @@
 import {Api} from "./Api.mjs";
+import {UiAdapter} from "./UiAdapter.mjs";
 
 export class Auth {
     static async user() {
@@ -13,18 +14,17 @@ export class Auth {
     static async authorizeFromForm(router) {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
-        Auth.authorize(username, password).then(() => {
-            router.navigate("chat");
+        Auth.authorize(username, password).then((res) => {
+            if (res.error) {
+                UiAdapter.showLoginError(res.error);
+                return;
+            }
+            router.navigate("search");
         });
     }
 
     static async authorize(username, password) {
-        const res = await Api.authorize(username, password);
-        if (res.user === null || res.error) {
-            return null;
-        }
-
-        return res.user;
+        return await Api.authorize(username, password);
     }
 
     static async logout() {

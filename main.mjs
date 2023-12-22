@@ -6,18 +6,18 @@ import {SendMessageEndpoint} from "./lib/endpoints/SendMessageEndpoint.mjs";
 import {GetHistoryEndpoint} from "./lib/endpoints/GetHistoryEndpoint.mjs";
 import dotenv from "dotenv";
 import multer from "multer";
-import {Context} from "./lib/context/Context.mjs";
 import passport from "passport";
 import session from "express-session";
 import bcrypt from "bcryptjs";
 import passportLocal from "passport-local";
 import {DB} from "./lib/db/DB.mjs";
 import {IP} from "./lib/context/IP.mjs";
+import {Context} from "./lib/context/Context.mjs";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
 dotenv.config();
-const context = Context.generate();
+const contextMap = {};
 
 /**
  *
@@ -27,7 +27,7 @@ const context = Context.generate();
 function addEndpoint(app, endpoint) {
     const { path, handler } = endpoint;
     app.post('/api' + path, checkAuthenticated, (req, res) => {
-        handler(req, res, context);
+        handler(req, res, contextMap[req.sessionID]);
     });
 }
 
@@ -50,7 +50,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session({}));
 app.post('/api' + VoiceRecognitionEndpoint.path, checkAuthenticated, upload.single('file'), (req, res) => {
-    VoiceRecognitionEndpoint.handler(req, res, context);
+    VoiceRecognitionEndpoint.handler(req, res, contextMap[req.sessionID]);
 });
 app.use(express.json());
 addEndpoints(app, endpoints);
@@ -98,9 +98,14 @@ app.post("/api/authorize", async (req, res, next) => {
     }
     const existing = await db.getUserByUsername(cleanUsername);
     if (!existing) {
-        const ip = IP.get(req);
-        const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-        await db.insertUser(cleanUsername, hashedPassword, ip);
+        if (process.env.REGISTER_USERS_ON_MISSING === "true") {
+            const ip = IP.get(req);
+            const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+            await db.insertUser(cleanUsername, hashedPassword, ip);
+        } else {
+            res.send({error: "Invalid username or password"});
+            return;
+        }
     }
     if (existing && !existing.ip) {
         const ip = IP.get(req);
@@ -126,6 +131,7 @@ app.post("/api/authorize", async (req, res, next) => {
             if (!existing) {
                 outUser.justRegistered = true;
             }
+            contextMap[req.sessionID] = Context.generate(user.displayname);
             return res.send({
                 user: outUser
             });
@@ -143,6 +149,8 @@ app.post("/api/logout", (req, res) => {
             secure: isHttps,
             sameSite: 'none'
         });
+
+        delete contextMap[req.sessionID];
 
         res.send({message: "User has been successfully logged out."});
     });

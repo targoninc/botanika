@@ -32,6 +32,13 @@ export class UserTemplates {
                             .type("password")
                             .build()
                     ).build(),
+                FJS.create("div")
+                    .classes("flex", "align-content")
+                    .children(
+                        FJS.create("span")
+                            .classes("login-error")
+                            .build(),
+                    ).build(),
                 FJS.create("button")
                     .text("Submit")
                     .onclick(async () => {

@@ -17,7 +17,7 @@
     --color-7: #A63BFF;
     --color-8: #FF3BDE;
     --color-9: #FF3B8C;
-    --input-padding: 0.5rem 1rem;
+    --input-padding: 0.6rem 0.8rem;
     --gap: 5px;
 }
 
@@ -131,6 +131,14 @@ body, html {
 
 .rounded {
     border-radius: var(--border-radius);
+}
+
+button {
+    cursor: pointer;
+}
+
+.login-error {
+    color: var(--color-1);
 }
 
 button, input, textarea {

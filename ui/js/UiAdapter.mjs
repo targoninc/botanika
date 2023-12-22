@@ -69,4 +69,9 @@ export class UiAdapter {
         }
         loudnessBar.style.width = `${loudness * 100}%`;
     }
+
+    static showLoginError(error) {
+        const loginError = document.querySelector('.login-error');
+        loginError.innerHTML = error;
+    }
 }
