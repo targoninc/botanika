@@ -53,7 +53,6 @@ export class UiAdapter {
                 Synthesizer.speak(res.text, window.language);
                 break;
             case "assistant-data":
-                UiAdapter.addChatMessage(ChatTemplates.message('assistant', "I have some data for you:"));
                 UiAdapter.addChatMessage(ChatTemplates.data(res.text));
                 break;
             case "system-response":

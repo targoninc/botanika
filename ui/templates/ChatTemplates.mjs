@@ -49,7 +49,7 @@ export class ChatTemplates {
                             .children(
                                 FJS.create('tr')
                                     .children(
-                                        data[0].map((col) => {
+                                        ...Object.keys(data[0]).map((col) => {
                                             return FJS.create('th')
                                                 .text(col)
                                                 .build();
@@ -58,10 +58,10 @@ export class ChatTemplates {
                             ).build(),
                         FJS.create('tbody')
                             .children(
-                                data.slice(1).map((row) => {
+                                ...data.slice(1).map((row) => {
                                     return FJS.create('tr')
                                         .children(
-                                            row.map((col) => {
+                                            ...Object.values(row).map((col) => {
                                                 return FJS.create('td')
                                                     .text(col)
                                                     .build();
@@ -82,6 +82,7 @@ export class ChatTemplates {
                     ).build();
             }
         } catch (e) {
+            console.log(e);
             return ChatTemplates.message('data', text, buttons);
         }
     }
