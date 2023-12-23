@@ -5,7 +5,7 @@ import {AudioAssistant} from "./AudioAssistant.mjs";
 
 export class VoiceRecorder {
     constructor() {
-        this.threshold = 0.005;
+        this.threshold = 0.015;
         this.timeout = 2000;
         this.audioChunks = [];
         this.currentVolume = 0;
