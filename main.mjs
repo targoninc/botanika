@@ -193,9 +193,8 @@ app.get('/api/spotify-login', checkAuthenticated, async (req, res) => {
 });
 
 app.get('/api/spotify-callback', checkAuthenticated, async (req, res) => {
-    await SpotifyApi.onCallback(req, res);
+    await SpotifyApi.onCallback(req, res, contextMap[req.sessionID]);
 });
-
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

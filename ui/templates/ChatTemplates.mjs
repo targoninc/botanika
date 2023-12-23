@@ -140,6 +140,11 @@ export class ChatTemplates {
                                     UiAdapter.addChatMessage(ChatTemplates.message('system', "New chat started"));
                                 }
                             }).build(),
+                        FJS.create("button")
+                            .text(`Log into Spotify`)
+                            .onclick(async () => {
+                                window.open("/api/spotify-login", "_blank");
+                            }).build(),
                     ).build(),
                 FJS.create('div')
                     .classes('chat-box-messages')

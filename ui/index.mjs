@@ -5,10 +5,12 @@ import {VoiceRecorder} from "./js/VoiceRecorder.mjs";
 import {UiAdapter} from "./js/UiAdapter.mjs";
 import {UserTemplates} from "./templates/UserTemplates.mjs";
 import {Auth} from "./js/Auth.mjs";
+import {PageTemplates} from "./templates/PageTemplates.mjs";
 
 const router = createRouter([
     { name: 'chat', path: '/' },
     { name: 'login', path: '/login' },
+    { name: 'spotify-login-success', path: '/spotify-login-success' }
 ],
 {
     defaultRoute: 'chat'
@@ -38,6 +40,17 @@ router.subscribe(async ({route}) => {
             }
             content.innerHTML = "";
             content.appendChild(UserTemplates.login(router));
+            break;
+        case 'spotify-login-success':
+            if (!state.user) {
+                router.navigate('login');
+                break;
+            }
+            content.innerHTML = "";
+            content.appendChild(PageTemplates.spotifyLoginSuccess());
+            setTimeout(() => {
+                window.close();
+            }, 3000);
             break;
         default:
             content.innerHTML = "404";
