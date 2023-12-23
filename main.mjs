@@ -146,6 +146,7 @@ app.post("/api/authorize", async (req, res, next) => {
             if (dbContext) {
                 contextMap[req.sessionID] = JSON.parse(dbContext.object);
                 contextMap[req.sessionID] = Context.updateGeneral(contextMap[req.sessionID]);
+                contextMap[req.sessionID] = Context.checkApiTokens(contextMap[req.sessionID]);
                 await db.updateContext(user.id, JSON.stringify(contextMap[req.sessionID]));
             } else {
                 contextMap[req.sessionID] = Context.generate(user);
@@ -190,6 +191,12 @@ app.post("/api/reset-context", checkAuthenticated, async (req, res) => {
 
 app.get('/api/spotify-login', checkAuthenticated, async (req, res) => {
     await SpotifyApi.onLogin(req, res);
+});
+
+app.get('/api/spotify-logout', checkAuthenticated, async (req, res) => {
+    delete contextMap[req.sessionID].apis.spotify;
+    await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
+    res.redirect('/spotify-logout-success');
 });
 
 app.get('/api/spotify-callback', checkAuthenticated, async (req, res) => {

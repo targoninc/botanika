@@ -87,10 +87,25 @@ export class UiAdapter {
         loginError.innerHTML = error;
     }
 
-    static removeSpotifyLoginButton() {
-        const spotifyLoginButton = document.querySelector('.spotify-login-button');
+    static activateSpotifyLoginButton() {
+        const spotifyLoginButton = document.querySelector('.spotify-button');
         if (spotifyLoginButton) {
-            spotifyLoginButton.remove();
+            spotifyLoginButton.classList.add('active');
+            spotifyLoginButton.innerText = "Spotify";
+            spotifyLoginButton.onclick = () => {
+                window.open('/api/spotify-logout', '_blank');
+            }
+        }
+    }
+
+    static deactivateSpotifyLoginButton() {
+        const spotifyLoginButton = document.querySelector('.spotify-button');
+        if (spotifyLoginButton) {
+            spotifyLoginButton.classList.remove('active');
+            spotifyLoginButton.innerText = "Login to Spotify";
+            spotifyLoginButton.onclick = () => {
+                window.open('/api/spotify-login', '_blank');
+            }
         }
     }
 }

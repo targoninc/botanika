@@ -19,8 +19,10 @@
     --color-8: #FF3BDE;
     --color-9: #FF3B8C;
     --regular-padding: 10px;
-    --input-padding: 0.6rem 0.8rem;
+    --input-padding: 0.4rem 0.6rem;
     --gap: 5px;
+    --spotify-green: #1DB954;
+    --spotify-black: #191414;
 }
 
 body, html {
@@ -120,6 +122,14 @@ body, html {
     word-wrap: anywhere;
 }
 
+.full-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
 .flex, .flex-v {
     display: flex;
     gap: var(--gap);
@@ -151,6 +161,7 @@ button {
 
 button:hover {
     background: var(--background-alt-2);
+    text-decoration: underline;
 }
 
 .login-error {
@@ -207,4 +218,18 @@ a {
 
 a:hover {
     color: var(--color-5);
+}
+
+button.active {
+    font-weight: bold;
+}
+
+.spotify-button {
+    color: var(--spotify-green);
+}
+
+.spotify-button.active {
+    background: var(--spotify-green);
+    border: 1px solid var(--spotify-green);
+    color: var(--background);
 }

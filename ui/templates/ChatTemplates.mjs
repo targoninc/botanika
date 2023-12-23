@@ -119,9 +119,16 @@ export class ChatTemplates {
         if (!context.apis.spotify) {
             buttons.push(FJS.create("button")
                 .text(`Log into Spotify`)
-                .classes("spotify-login-button")
+                .classes("spotify-button")
                 .onclick(async () => {
                     window.open("/api/spotify-login", "_blank");
+                }).build());
+        } else {
+            buttons.push(FJS.create("button")
+                .text(`Spotify`)
+                .classes("spotify-button", "active")
+                .onclick(async () => {
+                    window.open("/api/spotify-logout", "_blank");
                 }).build());
         }
 

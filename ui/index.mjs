@@ -9,13 +9,15 @@ import {PageTemplates} from "./templates/PageTemplates.mjs";
 import {Broadcast} from "./js/Broadcast.mjs";
 
 const router = createRouter([
-    { name: 'chat', path: '/' },
-    { name: 'login', path: '/login' },
-    { name: 'spotify-login-success', path: '/spotify-login-success' }
-],
-{
-    defaultRoute: 'chat'
-});
+        {name: 'chat', path: '/'},
+        {name: 'login', path: '/login'},
+        {name: 'spotify-login-success', path: '/spotify-login-success'},
+        {name: 'spotify-logout-success', path: '/spotify-logout-success'},
+        {name: 'spotify-login-success-mock', path: '/spotify-login-success-mock'}
+    ],
+    {
+        defaultRoute: 'chat'
+    });
 router.usePlugin(browserPlugin());
 
 router.subscribe(async ({route}) => {
@@ -48,11 +50,17 @@ router.subscribe(async ({route}) => {
                 break;
             }
             content.innerHTML = "";
-            content.appendChild(PageTemplates.spotifyLoginSuccess());
+            content.appendChild(PageTemplates.redirectPage('Spotify Login Successful', 1, '--close'));
             Broadcast.send('spotify-login-success');
-            setTimeout(() => {
-                window.close();
-            }, 3000);
+            break;
+        case 'spotify-logout-success':
+            if (!state.user) {
+                router.navigate('login');
+                break;
+            }
+            content.innerHTML = "";
+            content.appendChild(PageTemplates.redirectPage('Spotify Logout Successful', 1, '--close'));
+            Broadcast.send('spotify-logout-success');
             break;
         default:
             content.innerHTML = "404";
@@ -75,7 +83,12 @@ Broadcast.listen((e) => {
         return;
     }
     const message = e.data;
-    if (message === 'spotify-login-success') {
-        UiAdapter.removeSpotifyLoginButton();
+    switch (message) {
+        case 'spotify-login-success':
+            UiAdapter.activateSpotifyLoginButton();
+            break;
+        case 'spotify-logout-success':
+            UiAdapter.deactivateSpotifyLoginButton();
+            break;
     }
 });
