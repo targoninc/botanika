@@ -86,4 +86,11 @@ export class UiAdapter {
         const loginError = document.querySelector('.login-error');
         loginError.innerHTML = error;
     }
+
+    static removeSpotifyLoginButton() {
+        const spotifyLoginButton = document.querySelector('.spotify-login-button');
+        if (spotifyLoginButton) {
+            spotifyLoginButton.remove();
+        }
+    }
 }

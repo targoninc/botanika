@@ -6,6 +6,7 @@ import {UiAdapter} from "./js/UiAdapter.mjs";
 import {UserTemplates} from "./templates/UserTemplates.mjs";
 import {Auth} from "./js/Auth.mjs";
 import {PageTemplates} from "./templates/PageTemplates.mjs";
+import {Broadcast} from "./js/Broadcast.mjs";
 
 const router = createRouter([
     { name: 'chat', path: '/' },
@@ -48,6 +49,7 @@ router.subscribe(async ({route}) => {
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.spotifyLoginSuccess());
+            Broadcast.send('spotify-login-success');
             setTimeout(() => {
                 window.close();
             }, 3000);
@@ -67,3 +69,13 @@ console.log('Recorder started.');
 setInterval(() => {
     UiAdapter.updateLoudness(recorder.currentVolume);
 }, 16);
+
+Broadcast.listen((e) => {
+    if (e.origin !== window.location.origin) {
+        return;
+    }
+    const message = e.data;
+    if (message === 'spotify-login-success') {
+        UiAdapter.removeSpotifyLoginButton();
+    }
+});

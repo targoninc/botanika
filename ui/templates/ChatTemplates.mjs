@@ -115,6 +115,16 @@ export class ChatTemplates {
     }
 
     static chatBox(router, context) {
+        const buttons = [];
+        if (!context.apis.spotify) {
+            buttons.push(FJS.create("button")
+                .text(`Log into Spotify`)
+                .classes("spotify-login-button")
+                .onclick(async () => {
+                    window.open("/api/spotify-login", "_blank");
+                }).build());
+        }
+
         return FJS.create('div')
             .classes('chat-box')
             .children(
@@ -140,11 +150,7 @@ export class ChatTemplates {
                                     UiAdapter.addChatMessage(ChatTemplates.message('system', "New chat started"));
                                 }
                             }).build(),
-                        FJS.create("button")
-                            .text(`Log into Spotify`)
-                            .onclick(async () => {
-                                window.open("/api/spotify-login", "_blank");
-                            }).build(),
+                        ...buttons,
                     ).build(),
                 FJS.create('div')
                     .classes('chat-box-messages')
