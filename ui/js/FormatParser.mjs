@@ -19,6 +19,9 @@ export class FormatParser {
     }
 
     static isCsv(text) {
+        if (!text) {
+            return false;
+        }
         if (text.startsWith("[") && text.endsWith("]")) {
             return false;
         }
