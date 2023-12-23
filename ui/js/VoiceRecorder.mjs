@@ -96,7 +96,7 @@ export class VoiceRecorder {
         if (speech) {
             AudioAssistant.play(speech);
         }
-        UiAdapter.handleMessages(res.responses, true, speech !== null);
+        UiAdapter.handleMessages(res.responses, true, !speech);
 
         this.audioChunks = [];
         this.processing = false;

@@ -168,7 +168,7 @@ export class ChatTemplates {
                                         if (speech) {
                                             AudioAssistant.play(speech);
                                         }
-                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), true, speech !== null);
+                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), true, !speech);
                                     });
                                 }
                             })
