@@ -13,6 +13,7 @@ import passportLocal from "passport-local";
 import {DB} from "./lib/db/DB.mjs";
 import {IP} from "./lib/context/IP.mjs";
 import {Context} from "./lib/context/Context.mjs";
+import {SpotifyApi} from "./lib/apis/SpotifyApi.mjs";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -186,6 +187,15 @@ app.post("/api/reset-context", checkAuthenticated, async (req, res) => {
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     res.send({context: contextMap[req.sessionID]});
 });
+
+app.get('/api/spotify-login', checkAuthenticated, async (req, res) => {
+    await SpotifyApi.onLogin(req, res);
+});
+
+app.get('/api/spotify-callback', checkAuthenticated, async (req, res) => {
+    await SpotifyApi.onCallback(req, res);
+});
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
