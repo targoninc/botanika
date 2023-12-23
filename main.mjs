@@ -13,7 +13,7 @@ import passportLocal from "passport-local";
 import {DB} from "./lib/db/DB.mjs";
 import {IP} from "./lib/context/IP.mjs";
 import {Context} from "./lib/context/Context.mjs";
-import {SpotifyApi} from "./lib/apis/SpotifyApi.mjs";
+import {SpotifyApi} from "./lib/apis/spotify/SpotifyApi.mjs";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
