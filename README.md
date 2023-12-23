@@ -24,17 +24,16 @@ npm run startLocal
 It is recommended to create an `.env` file in the root directory of the project and add the variables there.
 Without the quired variables the features will not work.
 
-## OpenAI
+## OpenAI (highly recommended)
+
+The OpenAI API is used to generate a lot of the bot's responses.
 
 [Get API key](https://platform.openai.com/api-keys)
 
 - OPENAI_API_KEY
 
-## OpenWeather
-
-[Get API key](https://home.openweathermap.org/api_keys)
-
-- OPENWEATHER_API_KEY
+Used in the following features:
+- Database integration
 
 ## Database integration
 
@@ -50,3 +49,16 @@ Use those credentials with the following variables:
 ### Make data accessible
 To be able to get data, it is recommended to create views on the `botanika` schema that reference the actual data from other schemas.
 You should filter the data in the views to only return the data you want to be accessible to the bot.
+
+## Weather data
+
+[Get API key](https://home.openweathermap.org/api_keys)
+
+- OPENWEATHER_API_KEY
+
+## Spotify
+
+[Get API key](https://developer.spotify.com/dashboard)
+
+- SPOTIFY_CLIENT_ID
+- SPOTIFY_CLIENT_SECRET
