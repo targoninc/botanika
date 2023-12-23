@@ -1,6 +1,7 @@
 import {Api} from "./Api.mjs";
 import {UiAdapter} from "./UiAdapter.mjs";
 import {ChatTemplates} from "../templates/ChatTemplates.mjs";
+import {AudioAssistant} from "./AudioAssistant.mjs";
 
 export class VoiceRecorder {
     constructor() {
@@ -91,7 +92,11 @@ export class VoiceRecorder {
             return;
         }
         window.language = res.context.user.language;
-        UiAdapter.handleMessages(res.responses, false);
+        const speech = res.speech;
+        if (speech) {
+            AudioAssistant.play(speech);
+        }
+        UiAdapter.handleMessages(res.responses, true, speech !== null);
 
         this.audioChunks = [];
         this.processing = false;

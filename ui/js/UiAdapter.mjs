@@ -25,10 +25,10 @@ export class UiAdapter {
         document.querySelector('.chat-box-input-field').value = value;
     }
 
-    static handleMessages(res, noAction = false) {
+    static handleMessages(res, open, speak) {
         if (res.constructor === Array) {
             for (const r of res) {
-                UiAdapter.handleMessages(r, noAction);
+                UiAdapter.handleMessages(r, open, speak);
             }
             return;
         }
@@ -50,7 +50,7 @@ export class UiAdapter {
                 break;
             case "assistant-response":
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
-                if (!noAction) {
+                if (speak) {
                     Synthesizer.speak(res.text, window.language);
                 }
                 break;
@@ -62,7 +62,7 @@ export class UiAdapter {
                 break;
             case "open-command":
                 UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
-                if (!noAction) {
+                if (open) {
                     window.open(res.url, '_blank');
                 }
                 break;

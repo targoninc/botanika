@@ -4,6 +4,7 @@ import {UiAdapter} from "../js/UiAdapter.mjs";
 import {UserTemplates} from "./UserTemplates.mjs";
 import {Auth} from "../js/Auth.mjs";
 import {FormatParser} from "../js/FormatParser.mjs";
+import {AudioAssistant} from "../js/AudioAssistant.mjs";
 
 export class ChatTemplates {
     static message(type, text, buttons = []) {
@@ -163,7 +164,11 @@ export class ChatTemplates {
                                             return;
                                         }
                                         window.language = res.context.user.language;
-                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), false);
+                                        const speech = res.speech;
+                                        if (speech) {
+                                            AudioAssistant.play(speech);
+                                        }
+                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), true, speech !== null);
                                     });
                                 }
                             })
