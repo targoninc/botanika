@@ -62,3 +62,31 @@ You should filter the data in the views to only return the data you want to be a
 
 - SPOTIFY_CLIENT_ID
 - SPOTIFY_CLIENT_SECRET
+
+# Deployment
+
+## Docker compose
+
+- `IMAGE_NAME` = ${GITHUB_USERNAME}_${GITHUB_REPOSITORY_NAME}
+
+```yaml
+version: "3"
+services:
+  api:
+    image: ${REGISTRY_URL}/${IMAGE_NAME}:latest
+    container_name: BOTANIKA
+    restart: always
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_URL=${MYSQL_URL}
+      - SESSION_SECRET=${SESSION_SECRET}
+      - DEPLOYMENT_URL=${DEPLOYMENT_URL}
+      - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - VOICE_ENABLED=${VOICE_ENABLED}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+    ports:
+      - "6000:3000"
+```
