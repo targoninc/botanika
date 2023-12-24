@@ -235,6 +235,7 @@ button.active {
 }
 
 .icon {
-    max-height: 1rem;
+    height: 1rem;
+    width: 1rem;
     filter: invert(1);
 }
