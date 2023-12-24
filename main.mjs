@@ -123,7 +123,7 @@ app.post("/api/authorize", async (req, res, next) => {
         await db.updateUserIp(existing.id, ip);
     }
 
-    passport.authenticate("local", (err, user) => {
+    passport.authenticate("local", async (err, user) => {
         if (err) {
             console.log(err);
             return next(err);
@@ -134,6 +134,13 @@ app.post("/api/authorize", async (req, res, next) => {
         req.logIn(user, async function (err) {
             if (err) {
                 return next(err);
+            }
+            if (process.env.VERIFY_SUBSCRIPTIONS === "true") {
+                const availableSubscriptions = await db.getAvailableSubscriptionByProductId(process.env.PRODUCT_ID);
+                const userSubscriptions = await db.getUserSubscriptions(user.id, availableSubscriptions.map(s => s.id));
+                if (userSubscriptions.length === 0) {
+                    return res.send({error: "You are not subscribed to any plans."});
+                }
             }
             const outUser = {
                 id: user.id,
