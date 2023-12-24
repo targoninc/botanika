@@ -69,11 +69,9 @@ router.subscribe(async ({route}) => {
 });
 
 router.start();
-console.log('Router started.');
 
-const recorder = new VoiceRecorder();
-recorder.start();
-console.log('Recorder started.');
+window.recorder = new VoiceRecorder();
+
 setInterval(() => {
     UiAdapter.updateLoudness(recorder.currentVolume);
 }, 16);

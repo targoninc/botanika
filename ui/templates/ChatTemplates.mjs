@@ -1,10 +1,11 @@
-import {FJS} from "@targoninc/fjs";
+import {FJS, FjsObservable} from "@targoninc/fjs";
 import {Api} from "../js/Api.mjs";
 import {UiAdapter} from "../js/UiAdapter.mjs";
-import {UserTemplates} from "./UserTemplates.mjs";
 import {Auth} from "../js/Auth.mjs";
 import {FormatParser} from "../js/FormatParser.mjs";
 import {AudioAssistant} from "../js/AudioAssistant.mjs";
+import {VoiceRecorder} from "../js/VoiceRecorder.mjs";
+import {Icon} from "../img/Icon.mjs";
 
 export class ChatTemplates {
     static message(type, text, buttons = []) {
@@ -115,6 +116,32 @@ export class ChatTemplates {
         }
     }
 
+    static voiceButton(isOn) {
+        const onState = new FjsObservable(isOn);
+        const iconState = new FjsObservable(isOn ? Icon.getSvg("mic_on") : Icon.getSvg("mic_off"));
+        const textState = new FjsObservable(isOn ? "Mute" : "Unmute");
+        onState.onUpdate = (value) => {
+            iconState.value = value ? Icon.getSvg("mic_on") : Icon.getSvg("mic_off");
+            textState.value = value ? "Mute" : "Unmute";
+        };
+
+        return FJS.create("button")
+            .classes("voice-button")
+            .onclick(() => {
+                VoiceRecorder.toggleRecording();
+                onState.value = !onState.value;
+            })
+            .children(
+                FJS.create("img")
+                    .classes("icon")
+                    .text(iconState)
+                    .build(),
+                FJS.create("span")
+                    .text(textState)
+                    .build()
+            ).build();
+    }
+
     static chatBox(router, context) {
         const buttons = [];
         if (!context.apis.spotify) {
@@ -132,6 +159,8 @@ export class ChatTemplates {
                     window.open("/api/spotify-logout", "_blank");
                 }).build());
         }
+
+        buttons.push(ChatTemplates.voiceButton());
 
         return FJS.create('div')
             .classes('chat-box')

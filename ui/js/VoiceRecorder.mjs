@@ -10,6 +10,23 @@ export class VoiceRecorder {
         this.audioChunks = [];
         this.currentVolume = 0;
         this.sum = 0.0;
+        this.recording = false;
+    }
+
+    static start() {
+        window.recorder.start();
+    }
+
+    static stop() {
+        window.recorder.stop();
+    }
+
+    static toggleRecording() {
+        if (window.recorder.recording) {
+            window.recorder.stop();
+        } else {
+            window.recorder.start();
+        }
     }
 
     start() {
@@ -37,6 +54,7 @@ export class VoiceRecorder {
                     this.mediaRecorder.requestData();
                 }, 1000);
                 this.mediaRecorder.start();
+                this.recording = true;
             });
     }
 
@@ -64,6 +82,7 @@ export class VoiceRecorder {
             this.mediaRecorder.stop();
         }
         this.dataInterval && clearInterval(this.dataInterval);
+        this.recording = false;
     }
 
     getAverageVolume(chunks) {
