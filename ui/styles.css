@@ -233,3 +233,8 @@ button.active {
     border: 1px solid var(--spotify-green);
     color: var(--background);
 }
+
+.icon {
+    max-height: 1rem;
+    filter: invert(1);
+}

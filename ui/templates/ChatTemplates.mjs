@@ -126,7 +126,7 @@ export class ChatTemplates {
         };
 
         return FJS.create("button")
-            .classes("voice-button")
+            .classes("voice-button", "flex")
             .onclick(() => {
                 VoiceRecorder.toggleRecording();
                 onState.value = !onState.value;
