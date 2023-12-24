@@ -97,6 +97,7 @@ passport.deserializeUser(async (id, done) => {
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+        req.requestId = Math.random().toString(36).substring(7);
         return next();
     }
     res.send({error: "Not authenticated"});
@@ -156,7 +157,7 @@ app.post("/api/authorize", async (req, res, next) => {
                 contextMap[req.sessionID] = Context.checkApiTokens(contextMap[req.sessionID]);
                 await db.updateContext(user.id, JSON.stringify(contextMap[req.sessionID]));
             } else {
-                contextMap[req.sessionID] = Context.generate(user);
+                contextMap[req.sessionID] = Context.generate(user, req.sessionID);
             }
             return res.send({
                 user: outUser
