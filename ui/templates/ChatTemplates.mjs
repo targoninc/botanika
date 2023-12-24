@@ -90,8 +90,9 @@ export class ChatTemplates {
                                 ...json.map((row) => {
                                     return FJS.create('tr')
                                         .children(
-                                            ...Object.values(row).map((col) => {
-                                                return ChatTemplates.tableCell(col);
+                                            ...Object.keys(json[0]).map((col) => {
+                                                const value = row[col] ?? '';
+                                                return ChatTemplates.tableCell(value);
                                             })
                                         ).build();
                                 })

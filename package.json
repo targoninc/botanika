@@ -25,6 +25,7 @@
     "openai": "^4.24.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
+    "qs": "^6.11.2",
     "router5": "^8.0.1",
     "router5-plugin-browser": "^8.0.1",
     "webpack": "^5.89.0",
