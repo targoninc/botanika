@@ -134,7 +134,7 @@ export class ChatTemplates {
             .children(
                 FJS.create("img")
                     .classes("icon")
-                    .text(iconState)
+                    .src(iconState)
                     .build(),
                 FJS.create("span")
                     .text(textState)
