@@ -30,6 +30,7 @@ export class VoiceRecorder {
     }
 
     start() {
+        this.recording = true;
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 this.mediaRecorder = new MediaRecorder(stream);
@@ -51,14 +52,21 @@ export class VoiceRecorder {
                 };
 
                 this.dataInterval = setInterval(() => {
+                    if (!this.recording) {
+                        return;
+                    }
                     this.mediaRecorder.requestData();
                 }, 1000);
                 this.mediaRecorder.start();
-                this.recording = true;
             });
     }
 
     async processAudio(event) {
+        if (!this.recording) {
+            this.lastDataTime = Date.now();
+            this.sum = 0.0;
+            return;
+        }
         const input = event.inputBuffer.getChannelData(0);
         let sum = 0.0;
         for (let i = 0; i < input.length; ++i) {
