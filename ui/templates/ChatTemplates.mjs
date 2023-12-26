@@ -159,6 +159,12 @@ export class ChatTemplates {
                     window.open("/api/spotify-logout", "_blank");
                 }).build());
         }
+        buttons.push(FJS.create("button")
+            .text(`Mute assistant`)
+            .classes("mute-button")
+            .onclick(async () => {
+                await AudioAssistant.toggleMute();
+            }).build());
 
         buttons.push(ChatTemplates.voiceButton());
 

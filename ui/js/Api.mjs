@@ -55,4 +55,14 @@ export class Api {
         }
         return await res.data;
     }
+
+    static async toggleAssistantMute() {
+        const res = await axios.post(`/api/toggle-assistant-mute`, {}, {
+            withCredentials: true
+        });
+        if (res.status !== 200) {
+            throw new Error(`Failed to toggle assistant mute: ${res.status}`);
+        }
+        return await res.data;
+    }
 }

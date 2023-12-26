@@ -29,10 +29,7 @@ function addEndpoint(app, endpoint) {
     const { path, handler } = endpoint;
     app.post('/api' + path, checkAuthenticated, (req, res) => {
         handler(req, res, contextMap[req.sessionID]).then(() => {
-            if (contextMap[req.sessionID].modified) {
-                contextMap[req.sessionID].modified = false;
-                db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
-            }
+            db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
         });
     });
 }
@@ -57,10 +54,7 @@ app.use(passport.initialize());
 app.use(passport.session({}));
 app.post('/api' + VoiceRecognitionEndpoint.path, checkAuthenticated, upload.single('file'), (req, res) => {
     VoiceRecognitionEndpoint.handler(req, res, contextMap[req.sessionID]).then(() => {
-        if (contextMap[req.sessionID].modified) {
-            contextMap[req.sessionID].modified = false;
-            db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
-        }
+        db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     });
 });
 app.use(express.json());
@@ -209,6 +203,12 @@ app.get('/api/spotify-logout', checkAuthenticated, async (req, res) => {
 
 app.get('/api/spotify-callback', checkAuthenticated, async (req, res) => {
     await SpotifyApi.onCallback(req, res, contextMap[req.sessionID]);
+});
+
+app.get('/toggle-assistant-mute', checkAuthenticated, async (req, res) => {
+    contextMap[req.sessionID].assistant.muted = !contextMap[req.sessionID].assistant.muted;
+    await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
+    res.redirect('/');
 });
 
 const __filename = fileURLToPath(import.meta.url);
