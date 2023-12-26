@@ -25,13 +25,16 @@ export class UiAdapter {
         document.querySelector('.chat-box-input-field').value = value;
     }
 
-    static handleMessages(res, open, speak) {
-        if (res.constructor === Array) {
-            for (const r of res) {
-                UiAdapter.handleMessages(r, open, speak);
-            }
-            return;
+    static setHistory(res, open, speak) {
+        const messages = document.querySelector('.chat-box-messages');
+        messages.innerHTML = "";
+        for (const r of res) {
+            const isLast = res.indexOf(r) === res.length - 1;
+            UiAdapter.handleMessage(r, open, speak && isLast);
         }
+    }
+
+    static handleMessage(res, open, speak) {
         if (!res.type) {
             throw new Error(`Response type not specified.`);
         }

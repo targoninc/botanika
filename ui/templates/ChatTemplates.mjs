@@ -223,7 +223,8 @@ export class ChatTemplates {
                                             AudioAssistant.play(speech);
                                         }
                                         const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
-                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), true, fallbackToNativeSpeech);
+                                        const shouldOpen = res.responses.some(r => r.type === "open-command");
+                                        UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
                                     });
                                 }
                             })

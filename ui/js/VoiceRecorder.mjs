@@ -124,7 +124,8 @@ export class VoiceRecorder {
             AudioAssistant.play(speech);
         }
         const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
-        UiAdapter.handleMessages(res.responses, true, fallbackToNativeSpeech);
+        const shouldOpen = res.responses.some(r => r.type === "open-command");
+        UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
 
         this.audioChunks = [];
         this.processing = false;
