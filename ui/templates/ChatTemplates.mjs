@@ -160,8 +160,8 @@ export class ChatTemplates {
                 }).build());
         }
         buttons.push(FJS.create("button")
-            .text(`Mute assistant`)
-            .classes("mute-button")
+            .text(context.assistant.muted ? `Unmute assistant` : `Mute assistant`)
+            .classes("mute-button", context.assistant.muted ? "muted" : "_")
             .onclick(async () => {
                 await AudioAssistant.toggleMute();
             }).build());
@@ -222,7 +222,8 @@ export class ChatTemplates {
                                         if (speech) {
                                             AudioAssistant.play(speech);
                                         }
-                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), true, !speech);
+                                        const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
+                                        UiAdapter.handleMessages(res.responses.filter(r => r.type !== 'user-message'), true, fallbackToNativeSpeech);
                                     });
                                 }
                             })

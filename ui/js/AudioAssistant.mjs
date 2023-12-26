@@ -11,7 +11,7 @@ export class AudioAssistant {
     static async toggleMute() {
         try {
             await Api.toggleAssistantMute();
-            const muteButton = document.getElementById('mute-button');
+            const muteButton = document.querySelector('.mute-button');
             const isMuted = muteButton.classList.contains('muted');
             if (isMuted) {
                 muteButton.classList.remove('muted');

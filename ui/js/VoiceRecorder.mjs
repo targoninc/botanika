@@ -123,7 +123,8 @@ export class VoiceRecorder {
         if (speech) {
             AudioAssistant.play(speech);
         }
-        UiAdapter.handleMessages(res.responses, true, !speech);
+        const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
+        UiAdapter.handleMessages(res.responses, true, fallbackToNativeSpeech);
 
         this.audioChunks = [];
         this.processing = false;

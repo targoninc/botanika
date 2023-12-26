@@ -205,7 +205,7 @@ app.get('/api/spotify-callback', checkAuthenticated, async (req, res) => {
     await SpotifyApi.onCallback(req, res, contextMap[req.sessionID]);
 });
 
-app.get('/toggle-assistant-mute', checkAuthenticated, async (req, res) => {
+app.post('/api/toggle-assistant-mute', checkAuthenticated, async (req, res) => {
     contextMap[req.sessionID].assistant.muted = !contextMap[req.sessionID].assistant.muted;
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     res.redirect('/');
