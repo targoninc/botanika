@@ -113,19 +113,11 @@ export class VoiceRecorder {
 
         const formData = new FormData();
         formData.append('file', audioBlob);
+        UiAdapter.addChatMessage(ChatTemplates.loading());
         const res = await Api.VoiceRecognition(formData);
-        if (res.error) {
-            UiAdapter.addChatMessage(ChatTemplates.message('error', res.error));
+        if (!UiAdapter.afterMessage(res)) {
             return;
         }
-        window.language = res.context.user.language;
-        const speech = res.speech;
-        if (speech) {
-            AudioAssistant.play(speech);
-        }
-        const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
-        const shouldOpen = res.responses.some(r => r.type === "open-command");
-        UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
 
         this.audioChunks = [];
         this.processing = false;

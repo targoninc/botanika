@@ -97,7 +97,7 @@ body, html {
     max-width: 200px;
 }
 
-.message.assistant {
+.message.assistant, .message.loading {
     border-left: 5px solid var(--color-6);
 }
 
@@ -120,6 +120,35 @@ body, html {
     font-family: monospace;
     font-size: 0.8rem;
     word-wrap: anywhere;
+}
+
+.loading {
+    width: min(200px, 100%);
+    height: 13px;
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50px;
+    filter: blur(50px);
+    background: var(--foreground-alt-2);
+    animation: loading-highlight 2s infinite linear;
+    transform: skew(-45deg);
+}
+
+@keyframes loading-highlight {
+    0% {
+        margin-left: -100%;
+    }
+    100% {
+        margin-left: 200%;
+    }
 }
 
 .full-center {

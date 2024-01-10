@@ -191,6 +191,12 @@ app.post("/api/reset-context", checkAuthenticated, async (req, res) => {
     res.send({context: contextMap[req.sessionID]});
 });
 
+app.post("/api/reset-history", checkAuthenticated, async (req, res) => {
+    contextMap[req.sessionID].history = [];
+    await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
+    res.send({context: contextMap[req.sessionID]});
+});
+
 app.get('/api/spotify-login', checkAuthenticated, async (req, res) => {
     await SpotifyApi.onLogin(req, res);
 });
@@ -208,7 +214,6 @@ app.get('/api/spotify-callback', checkAuthenticated, async (req, res) => {
 app.post('/api/toggle-assistant-mute', checkAuthenticated, async (req, res) => {
     contextMap[req.sessionID].assistant.muted = !contextMap[req.sessionID].assistant.muted;
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
-    res.redirect('/');
 });
 
 const __filename = fileURLToPath(import.meta.url);

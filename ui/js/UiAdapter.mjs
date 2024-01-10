@@ -1,5 +1,6 @@
 import {ChatTemplates} from "../templates/ChatTemplates.mjs";
 import {Synthesizer} from "./Synthesizer.mjs";
+import {AudioAssistant} from "./AudioAssistant.mjs";
 
 export class UiAdapter {
     static addChatMessage(message) {
@@ -110,5 +111,30 @@ export class UiAdapter {
                 window.open('/api/spotify-login', '_blank');
             }
         }
+    }
+
+    static removeLoading() {
+        const loadingMessage = document.querySelector('.loading-message');
+        if (loadingMessage) {
+            loadingMessage.remove();
+        }
+    }
+
+    static afterMessage(res) {
+        UiAdapter.removeLoading();
+        if (res.error) {
+            UiAdapter.addChatMessage(ChatTemplates.message('error', res.error));
+            return false;
+        }
+
+        window.language = res.context.user.language;
+        const speech = res.speech;
+        if (speech) {
+            AudioAssistant.play(speech).then();
+        }
+        const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
+        const shouldOpen = res.responses.some(r => r.type === "open-command");
+        UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
+        return true;
     }
 }

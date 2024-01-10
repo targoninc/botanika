@@ -56,6 +56,16 @@ export class Api {
         return await res.data;
     }
 
+    static async resetHistory() {
+        const res = await axios.post(`/api/reset-history`, {}, {
+            withCredentials: true
+        });
+        if (res.status !== 200) {
+            throw new Error(`Failed to reset history: ${res.status}`);
+        }
+        return await res.data;
+    }
+
     static async toggleAssistantMute() {
         const res = await axios.post(`/api/toggle-assistant-mute`, {}, {
             withCredentials: true
