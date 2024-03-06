@@ -140,6 +140,9 @@ export class ChatTemplates {
 
     static chatBox(router, context) {
         const buttons = [];
+        if (!context) {
+            return FJS.create("div").text("No context").build();
+        }
         if (!context.apis.spotify) {
             buttons.push(
                 FJS.create("button")
