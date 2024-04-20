@@ -1,9 +1,9 @@
 :root {
-    --background: #111720;
-    --background-alt: #1E2A32;
-    --background-alt-2: #2F3A40;
-    --background-alt-3: #0D1015;
-    --foreground: #F2F2F2;
+    --background: #151414;
+    --background-alt: #1e1c1c;
+    --background-alt-2: #2e2b2b;
+    --background-alt-3: #0b0808;
+    --foreground: #e7e6e3;
     --foreground-alt: #D9D9D9;
     --foreground-alt-2: #BFBFBF;
     --foreground-alt-3: #A6A6A6;
@@ -20,7 +20,9 @@
     --color-9: #FF3B8C;
     --regular-padding: 10px;
     --small-padding: 5px;
-    --input-padding: 0.4rem 0.6rem;
+    --vertical-input-padding: 0.4rem;
+    --horizontal-input-padding: 0.6rem;
+    --input-padding: var(--vertical-input-padding) var(--horizontal-input-padding);
     --gap: 5px;
     --spotify-green: #1DB954;
     --spotify-black: #191414;
@@ -36,6 +38,10 @@ body, html {
 
 #content {
     height: 100%;
+}
+
+.hidden {
+    display: none;
 }
 
 .text-message, .data-message {
@@ -62,10 +68,24 @@ body, html {
     gap: var(--gap);
 }
 
-.loudness-bar {
-    height: 10px;
-    background: var(--foreground-alt-2);
-    border-radius: var(--border-radius);
+.spaced {
+    justify-content: space-between;
+}
+
+.red-dot-container {
+    --red-dot-max-size: calc(1em + (2 * var(--vertical-input-padding)));
+    width: var(--red-dot-max-size);
+    height: var(--red-dot-max-size);
+    display: flex;
+}
+
+.red-dot {
+    margin: auto;
+    height: calc(var(--red-dot-max-size) * .5);
+    width: calc(var(--red-dot-max-size) * .5);
+    transform-origin: center;
+    background: var(--color-1);
+    border-radius: 50%;
 }
 
 .chat-box-messages {

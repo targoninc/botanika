@@ -1,4 +1,13 @@
 export class Api {
+    static async postFormData(url, formData) {
+        const res = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+        });
+        return await this.basicResponseHandling(res);
+    }
+
     static async post(url, data = {}, sendCredentials = true) {
         const res = await fetch(url, {
             method: 'POST',
@@ -35,7 +44,7 @@ export class Api {
     }
 
     static async VoiceRecognition(data) {
-        const res = await this.post('/api/voice-recognition', data);
+        const res = await this.postFormData('/api/voice-recognition', data);
         return res.data;
     }
 

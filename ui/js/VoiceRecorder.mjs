@@ -1,6 +1,8 @@
 import {Api} from "./Api.mjs";
 import {UiAdapter} from "./UiAdapter.mjs";
 import {ChatTemplates} from "../templates/ChatTemplates.mjs";
+import {store} from "https://fjs.targoninc.com/f.js";
+import {StoreKeys} from "./StoreKeys.mjs";
 
 export class VoiceRecorder {
     constructor() {
@@ -8,6 +10,7 @@ export class VoiceRecorder {
         this.timeout = 2000;
         this.audioChunks = [];
         this.currentVolume = 0;
+        store().get(StoreKeys.currentLoudness).value = this.currentVolume;
         this.sum = 0.0;
         this.recording = false;
     }
@@ -73,6 +76,7 @@ export class VoiceRecorder {
         }
         const level = Math.sqrt(sum / input.length);
         this.currentVolume = level;
+        store().get(StoreKeys.currentLoudness).value = this.currentVolume;
         if (level > this.threshold) {
             this.lastDataTime = Date.now();
             this.sum += level;

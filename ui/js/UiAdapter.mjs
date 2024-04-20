@@ -3,6 +3,7 @@ import {Synthesizer} from "./Synthesizer.mjs";
 import {AudioAssistant} from "./AudioAssistant.mjs";
 import {Api} from "./Api.mjs";
 import {store} from "https://fjs.targoninc.com/f.js";
+import {MessageTypes} from "./MessageTypes.mjs";
 
 export class UiAdapter {
     static addChatMessage(domNode, type = "system", time = null) {
@@ -88,31 +89,31 @@ export class UiAdapter {
                     UiAdapter.addChatMessage(ChatTemplates.message(message.type, message.text), message.type, message.timeToResponse);
                 }
                 break;
-            case "error":
+            case MessageTypes.error:
                 UiAdapter.addChatMessage(ChatTemplates.message('error', res.text), "error");
                 break;
-            case "user-message":
+            case MessageTypes.userMessage:
                 UiAdapter.addChatMessage(ChatTemplates.message('user', res.text), "user", res.timeToResponse);
                 break;
-            case "assistant-response":
+            case MessageTypes.assistantResponse:
                 UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text), "assistant", res.timeToResponse);
                 if (speak) {
                     Synthesizer.speak(res.text, window.language);
                 }
                 break;
-            case "assistant-data":
+            case MessageTypes.assistantData:
                 UiAdapter.addChatMessage(ChatTemplates.data(res.text), "data", res.timeToResponse);
                 break;
-            case "system-response":
+            case MessageTypes.systemResponse:
                 UiAdapter.addChatMessage(ChatTemplates.message('system', res.text), "system", res.timeToResponse);
                 break;
-            case "open-command":
+            case MessageTypes.openCommand:
                 UiAdapter.addChatMessage(ChatTemplates.message('system', res.text), "system", res.timeToResponse);
                 if (open) {
                     window.open(res.url, '_blank');
                 }
                 break;
-            case "image":
+            case MessageTypes.image:
                 UiAdapter.addChatMessage(ChatTemplates.image(res.url), "image", res.timeToResponse);
                 break;
             default:
@@ -138,39 +139,9 @@ export class UiAdapter {
         a.click();
     }
 
-    static updateLoudness(loudness) {
-        const loudnessBar = document.querySelector('.loudness-bar');
-        if (!loudnessBar) {
-            return;
-        }
-        loudnessBar.style.width = `${loudness * 100}%`;
-    }
-
     static showLoginError(error) {
         const loginError = document.querySelector('.login-error');
         loginError.innerHTML = error;
-    }
-
-    static activateSpotifyLoginButton() {
-        const spotifyLoginButton = document.querySelector('.spotify-button');
-        if (spotifyLoginButton) {
-            spotifyLoginButton.classList.add('active');
-            spotifyLoginButton.innerText = "Spotify";
-            spotifyLoginButton.onclick = () => {
-                window.open('/api/spotify-logout', '_blank');
-            }
-        }
-    }
-
-    static deactivateSpotifyLoginButton() {
-        const spotifyLoginButton = document.querySelector('.spotify-button');
-        if (spotifyLoginButton) {
-            spotifyLoginButton.classList.remove('active');
-            spotifyLoginButton.innerText = "Login to Spotify";
-            spotifyLoginButton.onclick = () => {
-                window.open('/api/spotify-login', '_blank');
-            }
-        }
     }
 
     static removeLoading() {

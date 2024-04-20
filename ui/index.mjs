@@ -8,8 +8,11 @@ import {Broadcast} from "./js/Broadcast.mjs";
 import {Router} from "./js/Router.mjs";
 import {routes} from "./js/Routes.mjs";
 import {signal, store} from "https://fjs.targoninc.com/f.js";
+import {StoreKeys} from "./js/StoreKeys.mjs";
 
-store().set("isSending", signal(false));
+store().set(StoreKeys.isSending, signal(false));
+store().set(StoreKeys.spotifyLoggedIn, signal(false));
+store().set(StoreKeys.currentLoudness, signal(0));
 
 const router = new Router(routes, async (route, params) => {
     const content = document.getElementById('content');
@@ -65,10 +68,6 @@ const router = new Router(routes, async (route, params) => {
 
 window.recorder = new VoiceRecorder();
 
-setInterval(() => {
-    UiAdapter.updateLoudness(recorder.currentVolume);
-}, 16);
-
 Broadcast.listen((e) => {
     if (e.origin !== window.location.origin) {
         return;
@@ -76,10 +75,10 @@ Broadcast.listen((e) => {
     const message = e.data;
     switch (message) {
         case 'spotify-login-success':
-            UiAdapter.activateSpotifyLoginButton();
+            store().get(StoreKeys.spotifyLoggedIn).value = true;
             break;
         case 'spotify-logout-success':
-            UiAdapter.deactivateSpotifyLoginButton();
+            store().get(StoreKeys.spotifyLoggedIn).value = false;
             break;
     }
 });

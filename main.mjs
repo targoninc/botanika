@@ -75,7 +75,11 @@ app.post("/api/logout", AuthActions.logout(contextMap));
 app.get("/api/isAuthorized", AuthActions.isAuthorized(contextMap));
 
 app.post("/api/reset-context", AuthActions.checkAuthenticated, async (req, res) => {
+    // Keep API info when resetting context
+    const apis = contextMap[req.sessionID].apis;
     contextMap[req.sessionID] = Context.generate(req.user, req.sessionID);
+    contextMap[req.sessionID].apis = apis;
+
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     res.send({context: contextMap[req.sessionID]});
 });
@@ -97,7 +101,7 @@ app.get('/api/spotify-logout', AuthActions.checkAuthenticated, async (req, res) 
 });
 
 app.get('/api/spotify-callback', AuthActions.checkAuthenticated, async (req, res) => {
-    await SpotifyApi.onCallback(req, res, contextMap[req.sessionID]);
+    await SpotifyApi.onCallback(req, res, contextMap[req.sessionID], db);
 });
 
 app.post('/api/toggle-assistant-mute', AuthActions.checkAuthenticated, async (req, res) => {

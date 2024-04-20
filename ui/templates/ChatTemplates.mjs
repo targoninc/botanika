@@ -6,6 +6,7 @@ import {AudioAssistant} from "../js/AudioAssistant.mjs";
 import {VoiceRecorder} from "../js/VoiceRecorder.mjs";
 import {TimeParser} from "../js/TimeParser.mjs";
 import {GenericTemplates} from "./GenericTemplates.mjs";
+import {StoreKeys} from "../js/StoreKeys.mjs";
 
 export class ChatTemplates {
     static messageContainer(domNode, type, time) {
@@ -111,18 +112,24 @@ export class ChatTemplates {
     }
 
     static voiceButton(isOn) {
-        const onState = new FjsObservable(isOn);
-        const iconState = new FjsObservable(isOn ? "mic" : "mic_off",);
-        const textState = new FjsObservable(isOn ? "Mute yourself" : "Unmute yourself");
+        const onState = signal(isOn);
+        const iconState = signal(isOn ? "mic" : "mic_off",);
+        const textState = signal(isOn ? "Mute yourself" : "Unmute yourself");
         onState.onUpdate = (value) => {
             iconState.value = value ? "mic" : "mic_off";
             textState.value = value ? "Mute yourself" : "Unmute yourself";
         };
+        const scaleState = store().get(StoreKeys.currentLoudness);
 
-        return GenericTemplates.button(textState, () => {
-            VoiceRecorder.toggleRecording();
-            onState.value = !onState.value;
-        }, iconState);
+        return create("div")
+            .classes("flex", "align-content")
+            .children(
+                GenericTemplates.button(textState, () => {
+                    VoiceRecorder.toggleRecording();
+                    onState.value = !onState.value;
+                }, iconState),
+                GenericTemplates.redDot(onState, scaleState),
+            ).build();
     }
 
     static chatBox(router, context) {
@@ -135,20 +142,31 @@ export class ChatTemplates {
         return create("div")
             .classes("chat-box")
             .children(
-                create("div").classes("loudness-bar").build(),
+                create("div")
+                    .classes("flex", "spaced")
+                    .children(
+                        create("div")
+                            .classes("flex")
+                            .children(
+                                ChatTemplates.resetContextButton(),
+                                ChatTemplates.resetHistoryButton(),
+                                ChatTemplates.spotifyButton(),
+                            ).build(),
+                        create("div")
+                            .classes("flex")
+                            .children(
+                                ChatTemplates.logoutButton(context, router),
+                            ).build(),
+                    ).build(),
+                create("div")
+                    .classes("chat-box-messages")
+                    .build(),
                 create("div")
                     .classes("flex")
                     .children(
-                        ChatTemplates.resetContextButton(),
-                        ChatTemplates.logoutButton(context, router),
-                        ChatTemplates.resetHistoryButton(),
-                        context.apis.spotify ?
-                            ChatTemplates.spotifyLogoutButton() :
-                            ChatTemplates.logIntoSpotifyButton(),
                         ChatTemplates.toggleAssistantMuteButton(context),
-                        ChatTemplates.voiceButton()
+                        ChatTemplates.voiceButton(),
                     ).build(),
-                create("div").classes("chat-box-messages").build(),
                 create("div")
                     .classes("chat-box-input", "flex")
                     .children(
@@ -175,16 +193,22 @@ export class ChatTemplates {
             }, iconState, [buttonClass]);
     }
 
-    static spotifyLogoutButton() {
-        return GenericTemplates.button("Spotify", async () => {
-            window.open("/api/spotify-logout", "_blank");
-        }, "graphic_eq", ["spotify-button", "active"]);
-    }
+    static spotifyButton() {
+        const loggedIn = store().get(StoreKeys.spotifyLoggedIn);
+        const textState = signal(loggedIn.value ? "Spotify" : "Log into Spotify");
+        const iconState = signal(loggedIn.value ? "graphic_eq" : "graphic_eq");
+        const buttonClass = signal(loggedIn.value ? "active" : "_");
+        const openUrl = signal(loggedIn.value ? "/api/spotify-logout" : "/api/spotify-login");
+        loggedIn.subscribe((value) => {
+            textState.value = value ? "Spotify" : "Log into Spotify";
+            iconState.value = value ? "graphic_eq" : "graphic_eq";
+            buttonClass.value = value ? "active" : "_";
+            openUrl.value = value ? "/api/spotify-logout" : "/api/spotify-login";
+        });
 
-    static logIntoSpotifyButton() {
-        return GenericTemplates.button("Log into Spotify", async () => {
-            window.open("/api/spotify-login", "_blank");
-        }, "graphic_eq", ["spotify-button"]);
+        return GenericTemplates.button(textState, async () => {
+            window.open(openUrl.value, "_blank");
+        }, iconState, ["spotify-button", buttonClass]);
     }
 
     static logoutButton(context, router) {
