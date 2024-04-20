@@ -7,6 +7,9 @@ import {PageTemplates} from "./templates/PageTemplates.mjs";
 import {Broadcast} from "./js/Broadcast.mjs";
 import {Router} from "./js/Router.mjs";
 import {routes} from "./js/Routes.mjs";
+import {signal, store} from "https://fjs.targoninc.com/f.js";
+
+store().set("isSending", signal(false));
 
 const router = new Router(routes, async (route, params) => {
     const content = document.getElementById('content');
@@ -25,7 +28,7 @@ const router = new Router(routes, async (route, params) => {
             content.appendChild(ChatTemplates.chatBox(router, state.context));
             const history = state.context.history;
             UiAdapter.setHistory(history, false, false);
-            UiAdapter.addChatMessage(ChatTemplates.message('system', "Welcome!"));
+            UiAdapter.addChatMessage(ChatTemplates.message('system', "Welcome!"), "system");
             break;
         case 'login':
             if (state.user) {

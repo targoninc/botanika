@@ -19,6 +19,7 @@
     --color-8: #FF3BDE;
     --color-9: #FF3B8C;
     --regular-padding: 10px;
+    --small-padding: 5px;
     --input-padding: 0.4rem 0.6rem;
     --gap: 5px;
     --spotify-green: #1DB954;
@@ -88,6 +89,21 @@ body, html {
     font-size: 2rem;
 }
 
+.send-button.sending {
+    cursor: not-allowed;
+    pointer-events: none;
+    background: var(--background-alt-2);
+    color: var(--foreground-alt-2);
+}
+
+.send-button * {
+    font-size: 2rem;
+}
+
+.send-button .material-symbols-outlined {
+    font-size: 2rem !important;
+}
+
 .chat-box-input-field:focus {
     outline: none;
 }
@@ -122,8 +138,22 @@ body, html {
     word-wrap: anywhere;
 }
 
+.message-container {
+    padding: var(--small-padding);
+    border-radius: var(--border-radius);
+}
+
+.message-container:hover {
+    background: var(--background);
+}
+
 .message-container:hover .message-time {
     display: flex;
+}
+
+.message-container.user {
+    display: flex;
+    justify-content: flex-end;
 }
 
 .message-time {
@@ -194,8 +224,15 @@ body, html {
     border-radius: var(--border-radius);
 }
 
+.material-symbols-outlined {
+    font-size: 1rem !important;
+}
+
 button {
     cursor: pointer;
+    display: flex;
+    gap: var(--gap);
+    align-items: center;
 }
 
 button:hover {

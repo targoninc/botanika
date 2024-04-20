@@ -52,8 +52,8 @@ export class TimeParser {
 
     static millisecondWord(language) {
         return {
-            de: "Millisekunde",
-            en: "millisecond"
+            de: "Millisekunden",
+            en: "milliseconds"
         }[language];
     }
 

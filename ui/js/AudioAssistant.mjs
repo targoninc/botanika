@@ -8,18 +8,10 @@ export class AudioAssistant {
         await audio.play();
     }
 
-    static async toggleMute() {
+    static async toggleMute(muteState) {
         try {
             await Api.toggleAssistantMute();
-            const muteButton = document.querySelector('.mute-button');
-            const isMuted = muteButton.classList.contains('muted');
-            if (isMuted) {
-                muteButton.classList.remove('muted');
-                muteButton.innerText = 'Mute assistant';
-            } else {
-                muteButton.classList.add('muted');
-                muteButton.innerText = 'Unmute assistant';
-            }
+            muteState.value = !muteState.value;
         } catch (e) {
             console.error(e);
         }

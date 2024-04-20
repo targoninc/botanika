@@ -12,6 +12,8 @@ import {DB} from "./lib/db/DB.mjs";
 import {SpotifyApi} from "./lib/apis/spotify/SpotifyApi.mjs";
 import {AuthActions} from "./lib/actions/AuthActions.mjs";
 import {PassportDeserializeUser, PassportSerializeUser, PassportStrategy} from "./lib/apis/PassportStrategy.mjs";
+import {CLI} from "./lib/CLI.mjs";
+import {Context} from "./lib/context/Context.mjs";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -59,9 +61,10 @@ app.use(express.json());
 addEndpoints(app, endpoints);
 
 const db_url = process.env.MYSQL_URL.toString();
-console.log(`Connecting to database at url ${db_url}...`);
+CLI.debug(`Connecting to database at url ${db_url}...`);
 const db = new DB(process.env.MYSQL_URL);
 await db.connect();
+CLI.success('Connected to database!');
 
 passport.use(PassportStrategy(db));
 passport.serializeUser(PassportSerializeUser());
@@ -72,7 +75,7 @@ app.post("/api/logout", AuthActions.logout(contextMap));
 app.get("/api/isAuthorized", AuthActions.isAuthorized(contextMap));
 
 app.post("/api/reset-context", AuthActions.checkAuthenticated, async (req, res) => {
-    contextMap[req.sessionID].history = [];
+    contextMap[req.sessionID] = Context.generate(req.user, db);
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     res.send({context: contextMap[req.sessionID]});
 });
@@ -85,6 +88,7 @@ app.post("/api/reset-history", AuthActions.checkAuthenticated, async (req, res) 
 
 app.get('/api/spotify-login', AuthActions.checkAuthenticated, async (req, res) => {
     await SpotifyApi.onLogin(req, res);
+    res.send({context: contextMap[req.sessionID]});
 });
 
 app.get('/api/spotify-logout', AuthActions.checkAuthenticated, async (req, res) => {
@@ -95,11 +99,13 @@ app.get('/api/spotify-logout', AuthActions.checkAuthenticated, async (req, res) 
 
 app.get('/api/spotify-callback', AuthActions.checkAuthenticated, async (req, res) => {
     await SpotifyApi.onCallback(req, res, contextMap[req.sessionID]);
+    res.send({context: contextMap[req.sessionID]});
 });
 
 app.post('/api/toggle-assistant-mute', AuthActions.checkAuthenticated, async (req, res) => {
     contextMap[req.sessionID].assistant.muted = !contextMap[req.sessionID].assistant.muted;
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
+    res.send({context: contextMap[req.sessionID]});
 });
 
 const __filename = fileURLToPath(import.meta.url);
@@ -112,4 +118,6 @@ app.get('*', (req, res) => {
     res.sendFile(__dirname + '/ui/index.html');
 });
 
-app.listen(3000, () => console.log('Listening on port 3000'));
+app.listen(3000, () => {
+    CLI.success(`Listening on ${process.env.DEPLOYMENT_URL || 'http://localhost:3000'}`);
+});

@@ -1,17 +1,16 @@
-import {create, FjsObservable} from "https://fjs.targoninc.com/f.js";
-import {Api} from "../js/Api.mjs";
+import {create, FjsObservable, signal, store} from "https://fjs.targoninc.com/f.js";
 import {UiAdapter} from "../js/UiAdapter.mjs";
 import {Auth} from "../js/Auth.mjs";
 import {FormatParser} from "../js/FormatParser.mjs";
 import {AudioAssistant} from "../js/AudioAssistant.mjs";
 import {VoiceRecorder} from "../js/VoiceRecorder.mjs";
-import {Icon} from "../img/Icon.mjs";
 import {TimeParser} from "../js/TimeParser.mjs";
+import {GenericTemplates} from "./GenericTemplates.mjs";
 
 export class ChatTemplates {
-    static messageContainer(domNode, time) {
+    static messageContainer(domNode, type, time) {
         return create("div")
-            .classes("message-container", "flex", "align-content")
+            .classes("message-container", "flex", "align-content", type)
             .children(
                 domNode,
                 time ? ChatTemplates.messageTime(time) : null,
@@ -53,34 +52,15 @@ export class ChatTemplates {
         const json = FormatParser.toJson(text);
         const csv = FormatParser.toCsv(text);
         const buttons = [
-            create("button")
-                .text("JSON")
-                .onclick(() => {
-                    const blob = new Blob([json], {type: "text/plain"});
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "data.json";
-                    a.click();
-                })
-                .build(),
-            create("button")
-                .text("CSV")
-                .onclick(() => {
-                    const blob = new Blob([csv], {type: "text/plain"});
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = "data.csv";
-                    a.click();
-                })
-                .build(),
-            create("button")
-                .text("Copy")
-                .onclick(() => {
-                    navigator.clipboard.writeText(text);
-                })
-                .build(),
+            GenericTemplates.button("JSON", () => {
+                UiAdapter.downloadJson(json);
+            }, "file_download"),
+            GenericTemplates.button("CSV", () => {
+                UiAdapter.downloadCsv(csv);
+            }, "file_download"),
+            GenericTemplates.button("Copy", () => {
+                navigator.clipboard.writeText(text);
+            }, "content_copy"),
         ];
         try {
             if (json.constructor === Array) {
@@ -122,8 +102,7 @@ export class ChatTemplates {
                             .children(...buttons)
                             .build(),
                         table,
-                    )
-                    .build();
+                    ).build();
             }
         } catch (e) {
             console.log(e);
@@ -133,65 +112,25 @@ export class ChatTemplates {
 
     static voiceButton(isOn) {
         const onState = new FjsObservable(isOn);
-        const iconState = new FjsObservable(
-            isOn ? Icon.getSvg("mic_on") : Icon.getSvg("mic_off"),
-        );
-        const textState = new FjsObservable(isOn ? "Mute" : "Unmute");
+        const iconState = new FjsObservable(isOn ? "mic" : "mic_off",);
+        const textState = new FjsObservable(isOn ? "Mute yourself" : "Unmute yourself");
         onState.onUpdate = (value) => {
-            iconState.value = value ? Icon.getSvg("mic_on") : Icon.getSvg("mic_off");
-            textState.value = value ? "Mute" : "Unmute";
+            iconState.value = value ? "mic" : "mic_off";
+            textState.value = value ? "Mute yourself" : "Unmute yourself";
         };
 
-        return create("button")
-            .classes("voice-button", "flex")
-            .onclick(() => {
-                VoiceRecorder.toggleRecording();
-                onState.value = !onState.value;
-            })
-            .children(
-                create("img").classes("icon").src(iconState).build(),
-                create("span").text(textState).build(),
-            )
-            .build();
+        return GenericTemplates.button(textState, () => {
+            VoiceRecorder.toggleRecording();
+            onState.value = !onState.value;
+        }, iconState);
     }
 
     static chatBox(router, context) {
-        const buttons = [];
         if (!context) {
-            return create("div").text("No context").build();
+            return create("div")
+                .text("No context")
+                .build();
         }
-        if (!context.apis.spotify) {
-            buttons.push(
-                create("button")
-                    .text(`Log into Spotify`)
-                    .classes("spotify-button")
-                    .onclick(async () => {
-                        window.open("/api/spotify-login", "_blank");
-                    })
-                    .build(),
-            );
-        } else {
-            buttons.push(
-                create("button")
-                    .text(`Spotify`)
-                    .classes("spotify-button", "active")
-                    .onclick(async () => {
-                        window.open("/api/spotify-logout", "_blank");
-                    })
-                    .build(),
-            );
-        }
-        buttons.push(
-            create("button")
-                .text(context.assistant.muted ? `Unmute assistant` : `Mute assistant`)
-                .classes("mute-button", context.assistant.muted ? "muted" : "_")
-                .onclick(async () => {
-                    await AudioAssistant.toggleMute();
-                })
-                .build(),
-        );
-
-        buttons.push(ChatTemplates.voiceButton());
 
         return create("div")
             .classes("chat-box")
@@ -200,70 +139,95 @@ export class ChatTemplates {
                 create("div")
                     .classes("flex")
                     .children(
-                        create("button")
-                            .text(`Reset all context`)
-                            .onclick(async () => {
-                                const res = await Api.resetContext();
-                                if (res) {
-                                    UiAdapter.setChatInput("");
-                                    UiAdapter.clearChatMessages();
-                                    UiAdapter.addChatMessage(
-                                        ChatTemplates.message("system", "New context started"),
-                                    );
-                                }
-                            })
-                            .build(),
-                        create("button")
-                            .text(`Logout ${context.user.name}`)
-                            .onclick(async () => {
-                                await Auth.logout();
-                                router.navigate("login");
-                            })
-                            .build(),
-                        create("button")
-                            .text(`New chat`)
-                            .onclick(async () => {
-                                const res = await Api.resetHistory();
-                                if (res) {
-                                    UiAdapter.setChatInput("");
-                                    UiAdapter.clearChatMessages();
-                                    UiAdapter.addChatMessage(
-                                        ChatTemplates.message("system", "New chat started"),
-                                    );
-                                }
-                            })
-                            .build(),
-                        ...buttons,
-                    )
-                    .build(),
+                        ChatTemplates.resetContextButton(),
+                        ChatTemplates.logoutButton(context, router),
+                        ChatTemplates.resetHistoryButton(),
+                        context.apis.spotify ?
+                            ChatTemplates.spotifyLogoutButton() :
+                            ChatTemplates.logIntoSpotifyButton(),
+                        ChatTemplates.toggleAssistantMuteButton(context),
+                        ChatTemplates.voiceButton()
+                    ).build(),
                 create("div").classes("chat-box-messages").build(),
                 create("div")
-                    .classes("chat-box-input")
+                    .classes("chat-box-input", "flex")
                     .children(
-                        create("input")
-                            .classes("chat-box-input-field")
-                            .placeholder("Enter a message...")
-                            .onkeydown((e) => {
-                                if (e.key === "Enter" && e.ctrlKey) {
-                                    const input = UiAdapter.getChatInput();
-                                    if (input === "") {
-                                        return;
-                                    }
-                                    UiAdapter.addChatMessage(
-                                        ChatTemplates.message("user", input),
-                                    );
-                                    UiAdapter.addChatMessage(ChatTemplates.loading());
-                                    UiAdapter.setChatInput("");
-                                    Api.SendMessage(input).then((res) => {
-                                        UiAdapter.afterMessage(res);
-                                    });
-                                }
-                            })
-                            .build(),
-                    )
-                    .build(),
+                        ChatTemplates.chatInputField(),
+                        ChatTemplates.sendButton(),
+                    ).build(),
             )
             .build();
+    }
+
+    static toggleAssistantMuteButton(context) {
+        const muteState = signal(context.assistant.muted);
+        const textState = signal(muteState.value ? "Unmute assistant" : "Mute assistant");
+        const iconState = signal(muteState.value ? "volume_off" : "volume_up");
+        const buttonClass = signal(muteState.value ? "muted" : "_");
+        muteState.subscribe((value) => {
+            textState.value = value ? "Unmute assistant" : "Mute assistant";
+            iconState.value = value ? "volume_off" : "volume_up";
+            buttonClass.value = value ? "muted" : "_";
+        });
+
+        return GenericTemplates.button(textState, async () => {
+                await AudioAssistant.toggleMute(muteState);
+            }, iconState, [buttonClass]);
+    }
+
+    static spotifyLogoutButton() {
+        return GenericTemplates.button("Spotify", async () => {
+            window.open("/api/spotify-logout", "_blank");
+        }, "graphic_eq", ["spotify-button", "active"]);
+    }
+
+    static logIntoSpotifyButton() {
+        return GenericTemplates.button("Log into Spotify", async () => {
+            window.open("/api/spotify-login", "_blank");
+        }, "graphic_eq", ["spotify-button"]);
+    }
+
+    static logoutButton(context, router) {
+        return GenericTemplates.button(`Logout ${context.user.name}`, async () => {
+            await Auth.logout();
+            router.navigate("login");
+        }, "logout");
+    }
+
+    static chatInputField() {
+        return create("input")
+            .classes("chat-box-input-field")
+            .placeholder("Enter a message...")
+            .onkeydown((e) => {
+                if (e.key === "Enter" && e.ctrlKey) {
+                    UiAdapter.sendCurrentMessage();
+                }
+            })
+            .build();
+    }
+
+    static sendButton() {
+        const isSending = store().get("isSending");
+        const buttonClass = signal(isSending.value ? "sending" : "_");
+        isSending.subscribe((value) => {
+            buttonClass.value = value ? "sending" : "_";
+        });
+
+        return GenericTemplates.button("Send", async () => {
+            await UiAdapter.sendCurrentMessage();
+        }, "send", ["send-button", buttonClass]);
+    }
+
+    static resetContextButton() {
+        return GenericTemplates.button("Reset all context", async () => {
+            await UiAdapter.resetContext();
+        }, "delete");
+    }
+
+    static resetHistoryButton() {
+        return GenericTemplates.button("New chat", async () => {
+            await UiAdapter.resetHistory();
+        }, "refresh");
     }
 
     static image(url) {
