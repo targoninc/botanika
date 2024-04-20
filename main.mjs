@@ -88,7 +88,6 @@ app.post("/api/reset-history", AuthActions.checkAuthenticated, async (req, res) 
 
 app.get('/api/spotify-login', AuthActions.checkAuthenticated, async (req, res) => {
     await SpotifyApi.onLogin(req, res);
-    res.send({context: contextMap[req.sessionID]});
 });
 
 app.get('/api/spotify-logout', AuthActions.checkAuthenticated, async (req, res) => {
