@@ -75,7 +75,7 @@ app.post("/api/logout", AuthActions.logout(contextMap));
 app.get("/api/isAuthorized", AuthActions.isAuthorized(contextMap));
 
 app.post("/api/reset-context", AuthActions.checkAuthenticated, async (req, res) => {
-    contextMap[req.sessionID] = Context.generate(req.user, db);
+    contextMap[req.sessionID] = Context.generate(req.user, req.sessionID);
     await db.updateContext(req.user.id, JSON.stringify(contextMap[req.sessionID]));
     res.send({context: contextMap[req.sessionID]});
 });

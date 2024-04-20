@@ -162,14 +162,14 @@ body, html {
     color: var(--foreground-alt-2);
 }
 
-.loading {
+.message.loading {
     width: min(200px, 100%);
     height: 13px;
     position: relative;
     overflow: hidden;
 }
 
-.loading::before {
+.message.loading::before {
     content: "";
     position: absolute;
     top: 0;

@@ -24,16 +24,27 @@ npm run startLocal
 It is recommended to create an `.env` file in the root directory of the project and add the variables there.
 Without the quired variables the features will not work.
 
-## OpenAI (highly recommended)
+## OpenAI / Groq (highly recommended)
 
-The OpenAI API is used to generate a lot of the bot's responses.
+The LLM APIs are used to generate a lot of the bot's responses.
+
+Used in the following features:
+- Database integration
+
+Need to set:
+- COMPLETION_PROVIDER= openai | groq
+
+### OpenAI
 
 [Get API key](https://platform.openai.com/api-keys)
 
 - OPENAI_API_KEY
 
-Used in the following features:
-- Database integration
+### Groq
+
+[Get API key](https://console.groq.com/keys)
+
+- GROQ_API_KEY
 
 ## Database integration
 
@@ -83,7 +94,9 @@ services:
       - SESSION_SECRET=${SESSION_SECRET}
       - DEPLOYMENT_URL=${DEPLOYMENT_URL}
       - OPENWEATHER_API_KEY=${OPENWEATHER_API_KEY}
+      - COMPLETION_PROVIDER=${COMPLETION_PROVIDER}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
       - VOICE_ENABLED=${VOICE_ENABLED}
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
