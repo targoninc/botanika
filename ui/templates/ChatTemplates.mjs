@@ -1,4 +1,4 @@
-import {create, FjsObservable, signal, store} from "https://fjs.targoninc.com/f.js";
+import {create, signal, store} from "https://fjs.targoninc.com/f.js";
 import {UiAdapter} from "../js/UiAdapter.mjs";
 import {Auth} from "../js/Auth.mjs";
 import {FormatParser} from "../js/FormatParser.mjs";
@@ -10,8 +10,12 @@ import {StoreKeys} from "../js/StoreKeys.mjs";
 
 export class ChatTemplates {
     static messageContainer(domNode, type, time) {
+        if (type.constructor === String) {
+            type = [type];
+        }
+
         return create("div")
-            .classes("message-container", "flex", "align-content", type)
+            .classes("message-container", "flex", "align-content", ...type)
             .children(
                 domNode,
                 time ? ChatTemplates.messageTime(time) : null,
@@ -264,6 +268,13 @@ export class ChatTemplates {
     static loading() {
         return create("div")
             .classes("message", "text-message", "flex-v", "loading", "assistant")
+            .children()
+            .build();
+    }
+
+    static userLoading() {
+        return create("div")
+            .classes("message", "text-message", "flex-v", "loading", "user")
             .children()
             .build();
     }

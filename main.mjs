@@ -114,7 +114,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, "ui")));
-app.use('/audio', express.static(path.join(__dirname, '/audio')));
+app.use('/audio', AuthActions.checkAuthenticated, express.static(path.join(__dirname, '/audio')));
 
 app.get('*', (req, res) => {
     res.sendFile(__dirname + '/ui/index.html');

@@ -6,6 +6,12 @@ import {store} from "https://fjs.targoninc.com/f.js";
 import {MessageTypes} from "./MessageTypes.mjs";
 
 export class UiAdapter {
+    /**
+     *
+     * @param domNode {HTMLElement}
+     * @param type {string|string[]}
+     * @param time {number|null}
+     */
     static addChatMessage(domNode, type = "system", time = null) {
         const messages = document.querySelector('.chat-box-messages');
         messages.appendChild(ChatTemplates.messageContainer(domNode, type, time));
@@ -47,9 +53,7 @@ export class UiAdapter {
         if (res) {
             UiAdapter.setChatInput("");
             UiAdapter.clearChatMessages();
-            UiAdapter.addChatMessage(
-                ChatTemplates.message("system", "New chat started"),
-            );
+            UiAdapter.addChatMessage(ChatTemplates.message("system", "New chat started"));
         }
     }
 

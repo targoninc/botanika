@@ -116,7 +116,7 @@ export class VoiceRecorder {
 
         const formData = new FormData();
         formData.append('file', audioBlob);
-        UiAdapter.addChatMessage(ChatTemplates.loading());
+        UiAdapter.addChatMessage(ChatTemplates.userLoading(), ["user", "loading"]);
         const res = await Api.VoiceRecognition(formData);
         if (!UiAdapter.afterMessage(res)) {
             return;
