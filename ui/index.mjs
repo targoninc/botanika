@@ -1,5 +1,3 @@
-import {createRouter} from 'router5';
-import browserPlugin from 'router5-plugin-browser';
 import {ChatTemplates} from "./templates/ChatTemplates.mjs";
 import {VoiceRecorder} from "./js/VoiceRecorder.mjs";
 import {UiAdapter} from "./js/UiAdapter.mjs";
@@ -7,27 +5,20 @@ import {UserTemplates} from "./templates/UserTemplates.mjs";
 import {Auth} from "./js/Auth.mjs";
 import {PageTemplates} from "./templates/PageTemplates.mjs";
 import {Broadcast} from "./js/Broadcast.mjs";
+import {Router} from "./js/Router.mjs";
+import {routes} from "./js/Routes.mjs";
 
-const router = createRouter([
-        {name: 'chat', path: '/'},
-        {name: 'login', path: '/login'},
-        {name: 'spotify-login-success', path: '/spotify-login-success'},
-        {name: 'spotify-logout-success', path: '/spotify-logout-success'},
-        {name: 'spotify-login-success-mock', path: '/spotify-login-success-mock'}
-    ],
-    {
-        defaultRoute: 'chat'
-    });
-router.usePlugin(browserPlugin());
-
-router.subscribe(async ({route}) => {
+const router = new Router(routes, async (route, params) => {
     const content = document.getElementById('content');
-    console.log(`Route changed to ${route.name}`);
+    console.log(`Route changed to ${route.path}`);
+    document.title = `botanika - ${route.title}`;
+
     const state = await Auth.userState();
-    switch (route.name) {
+    switch (route.path) {
         case 'chat':
             if (!state.user) {
-                router.navigate('login');
+                console.log('User not logged in');
+                await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
@@ -38,7 +29,8 @@ router.subscribe(async ({route}) => {
             break;
         case 'login':
             if (state.user) {
-                router.navigate('chat');
+                console.log('User already logged in');
+                await router.navigate('chat');
                 break;
             }
             content.innerHTML = "";
@@ -46,7 +38,7 @@ router.subscribe(async ({route}) => {
             break;
         case 'spotify-login-success':
             if (!state.user) {
-                router.navigate('login');
+                await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
@@ -55,7 +47,7 @@ router.subscribe(async ({route}) => {
             break;
         case 'spotify-logout-success':
             if (!state.user) {
-                router.navigate('login');
+                await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
@@ -67,8 +59,6 @@ router.subscribe(async ({route}) => {
             break;
     }
 });
-
-router.start();
 
 window.recorder = new VoiceRecorder();
 

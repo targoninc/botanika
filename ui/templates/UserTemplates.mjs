@@ -1,4 +1,4 @@
-import {FJS} from "@targoninc/fjs";
+import {FJS} from "https://fjs.targoninc.com/f.js";
 import {Auth} from "../js/Auth.mjs";
 
 export class UserTemplates {

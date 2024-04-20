@@ -1,4 +1,4 @@
-import {FJS, FjsObservable} from "@targoninc/fjs";
+import {create, FjsObservable} from "https://fjs.targoninc.com/f.js";
 import {Api} from "../js/Api.mjs";
 import {UiAdapter} from "../js/UiAdapter.mjs";
 import {Auth} from "../js/Auth.mjs";
@@ -9,34 +9,34 @@ import {Icon} from "../img/Icon.mjs";
 
 export class ChatTemplates {
     static message(type, text, buttons = []) {
-        return FJS.create("div")
+        return create("div")
             .classes("message", "text-message", "flex-v", type)
             .children(
-                FJS.create("div")
+                create("div")
                     .classes("flex")
                     .children(...buttons)
                     .build(),
-                FJS.create("div").classes("message-text", type).text(text).build(),
+                create("div").classes("message-text", type).text(text).build(),
             )
             .build();
     }
 
     static tableCell(text) {
         if (text && text.toString().startsWith("http")) {
-            return FJS.create("td")
+            return create("td")
                 .children(
-                    FJS.create("a").href(text).target("_blank").text(text).build(),
+                    create("a").href(text).target("_blank").text(text).build(),
                 )
                 .build();
         }
-        return FJS.create("td").text(text).build();
+        return create("td").text(text).build();
     }
 
     static data(text) {
         const json = FormatParser.toJson(text);
         const csv = FormatParser.toCsv(text);
         const buttons = [
-            FJS.create("button")
+            create("button")
                 .text("JSON")
                 .onclick(() => {
                     const blob = new Blob([json], {type: "text/plain"});
@@ -47,7 +47,7 @@ export class ChatTemplates {
                     a.click();
                 })
                 .build(),
-            FJS.create("button")
+            create("button")
                 .text("CSV")
                 .onclick(() => {
                     const blob = new Blob([csv], {type: "text/plain"});
@@ -58,7 +58,7 @@ export class ChatTemplates {
                     a.click();
                 })
                 .build(),
-            FJS.create("button")
+            create("button")
                 .text("Copy")
                 .onclick(() => {
                     navigator.clipboard.writeText(text);
@@ -67,24 +67,24 @@ export class ChatTemplates {
         ];
         try {
             if (json.constructor === Array) {
-                const table = FJS.create("table")
+                const table = create("table")
                     .classes("data-table")
                     .children(
-                        FJS.create("thead")
+                        create("thead")
                             .children(
-                                FJS.create("tr")
+                                create("tr")
                                     .children(
                                         ...Object.keys(json[0]).map((col) => {
-                                            return FJS.create("th").text(col).build();
+                                            return create("th").text(col).build();
                                         }),
                                     )
                                     .build(),
                             )
                             .build(),
-                        FJS.create("tbody")
+                        create("tbody")
                             .children(
                                 ...json.map((row) => {
-                                    return FJS.create("tr")
+                                    return create("tr")
                                         .children(
                                             ...Object.keys(json[0]).map((col) => {
                                                 const value = row[col] ?? "";
@@ -97,10 +97,10 @@ export class ChatTemplates {
                             .build(),
                     )
                     .build();
-                return FJS.create("div")
+                return create("div")
                     .classes("message", "data-message", "assistant", "flex-v")
                     .children(
-                        FJS.create("div")
+                        create("div")
                             .classes("flex")
                             .children(...buttons)
                             .build(),
@@ -125,15 +125,15 @@ export class ChatTemplates {
             textState.value = value ? "Mute" : "Unmute";
         };
 
-        return FJS.create("button")
+        return create("button")
             .classes("voice-button", "flex")
             .onclick(() => {
                 VoiceRecorder.toggleRecording();
                 onState.value = !onState.value;
             })
             .children(
-                FJS.create("img").classes("icon").src(iconState).build(),
-                FJS.create("span").text(textState).build(),
+                create("img").classes("icon").src(iconState).build(),
+                create("span").text(textState).build(),
             )
             .build();
     }
@@ -141,11 +141,11 @@ export class ChatTemplates {
     static chatBox(router, context) {
         const buttons = [];
         if (!context) {
-            return FJS.create("div").text("No context").build();
+            return create("div").text("No context").build();
         }
         if (!context.apis.spotify) {
             buttons.push(
-                FJS.create("button")
+                create("button")
                     .text(`Log into Spotify`)
                     .classes("spotify-button")
                     .onclick(async () => {
@@ -155,7 +155,7 @@ export class ChatTemplates {
             );
         } else {
             buttons.push(
-                FJS.create("button")
+                create("button")
                     .text(`Spotify`)
                     .classes("spotify-button", "active")
                     .onclick(async () => {
@@ -165,7 +165,7 @@ export class ChatTemplates {
             );
         }
         buttons.push(
-            FJS.create("button")
+            create("button")
                 .text(context.assistant.muted ? `Unmute assistant` : `Mute assistant`)
                 .classes("mute-button", context.assistant.muted ? "muted" : "_")
                 .onclick(async () => {
@@ -176,14 +176,14 @@ export class ChatTemplates {
 
         buttons.push(ChatTemplates.voiceButton());
 
-        return FJS.create("div")
+        return create("div")
             .classes("chat-box")
             .children(
-                FJS.create("div").classes("loudness-bar").build(),
-                FJS.create("div")
+                create("div").classes("loudness-bar").build(),
+                create("div")
                     .classes("flex")
                     .children(
-                        FJS.create("button")
+                        create("button")
                             .text(`Reset all context`)
                             .onclick(async () => {
                                 const res = await Api.resetContext();
@@ -196,14 +196,14 @@ export class ChatTemplates {
                                 }
                             })
                             .build(),
-                        FJS.create("button")
+                        create("button")
                             .text(`Logout ${context.user.name}`)
                             .onclick(async () => {
                                 await Auth.logout();
                                 router.navigate("login");
                             })
                             .build(),
-                        FJS.create("button")
+                        create("button")
                             .text(`New chat`)
                             .onclick(async () => {
                                 const res = await Api.resetHistory();
@@ -219,11 +219,11 @@ export class ChatTemplates {
                         ...buttons,
                     )
                     .build(),
-                FJS.create("div").classes("chat-box-messages").build(),
-                FJS.create("div")
+                create("div").classes("chat-box-messages").build(),
+                create("div")
                     .classes("chat-box-input")
                     .children(
-                        FJS.create("input")
+                        create("input")
                             .classes("chat-box-input-field")
                             .placeholder("Enter a message...")
                             .onkeydown((e) => {
@@ -250,14 +250,14 @@ export class ChatTemplates {
     }
 
     static image(url) {
-        return FJS.create("div")
+        return create("div")
             .classes("message", "image-message", "assistant")
-            .children(FJS.create("img").classes("message-image").src(url).build())
+            .children(create("img").classes("message-image").src(url).build())
             .build();
     }
 
     static loading() {
-        return FJS.create("div")
+        return create("div")
             .classes("message", "text-message", "flex-v", "loading", "assistant")
             .children()
             .build();

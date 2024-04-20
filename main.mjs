@@ -104,12 +104,12 @@ app.post('/api/toggle-assistant-mute', AuthActions.checkAuthenticated, async (re
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-app.use("/", express.static(path.join(__dirname, "dist")));
+
 app.use(express.static(path.join(__dirname, "ui")));
 app.use('/audio', express.static(path.join(__dirname, '/audio')));
 
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "dist", "index.html"));
+app.get('*', (req, res) => {
+    res.sendFile(__dirname + '/ui/index.html');
 });
 
 app.listen(3000, () => console.log('Listening on port 3000'));

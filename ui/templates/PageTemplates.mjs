@@ -1,4 +1,4 @@
-import {FJS} from "@targoninc/fjs";
+import {FJS} from "https://fjs.targoninc.com/f.js";
 
 export class PageTemplates {
     static redirectPage(title, timeout, link) {
