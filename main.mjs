@@ -98,7 +98,6 @@ app.get('/api/spotify-logout', AuthActions.checkAuthenticated, async (req, res) 
 
 app.get('/api/spotify-callback', AuthActions.checkAuthenticated, async (req, res) => {
     await SpotifyApi.onCallback(req, res, contextMap[req.sessionID]);
-    res.send({context: contextMap[req.sessionID]});
 });
 
 app.post('/api/toggle-assistant-mute', AuthActions.checkAuthenticated, async (req, res) => {
