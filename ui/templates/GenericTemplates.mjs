@@ -15,7 +15,7 @@ export class GenericTemplates {
             .children(
                 icon ? this.materialIcon(icon) : null,
                 create("span")
-                    .classes("button-text")
+                    .classes("button-text", "not-mobile")
                     .text(text)
                     .build()
             ).build();
