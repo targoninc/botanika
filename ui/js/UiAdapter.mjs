@@ -3,10 +3,10 @@ import {Synthesizer} from "./Synthesizer.mjs";
 import {AudioAssistant} from "./AudioAssistant.mjs";
 
 export class UiAdapter {
-    static addChatMessage(message) {
+    static addChatMessage(domNode, time = null) {
         const messages = document.querySelector('.chat-box-messages');
-        messages.appendChild(message);
-        message.scrollIntoView();
+        messages.appendChild(ChatTemplates.messageContainer(domNode, time));
+        domNode.scrollIntoView();
     }
 
     static clearChatMessages() {
@@ -43,35 +43,35 @@ export class UiAdapter {
             case "history":
                 UiAdapter.clearChatMessages();
                 for (const message of res.messages) {
-                    UiAdapter.addChatMessage(ChatTemplates.message(message.type, message.text));
+                    UiAdapter.addChatMessage(ChatTemplates.message(message.type, message.text), message.timeToResponse);
                 }
                 break;
             case "error":
                 UiAdapter.addChatMessage(ChatTemplates.message('error', res.text));
                 break;
             case "user-message":
-                UiAdapter.addChatMessage(ChatTemplates.message('user', res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('user', res.text), res.timeToResponse);
                 break;
             case "assistant-response":
-                UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('assistant', res.text), res.timeToResponse);
                 if (speak) {
                     Synthesizer.speak(res.text, window.language);
                 }
                 break;
             case "assistant-data":
-                UiAdapter.addChatMessage(ChatTemplates.data(res.text));
+                UiAdapter.addChatMessage(ChatTemplates.data(res.text), res.timeToResponse);
                 break;
             case "system-response":
-                UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('system', res.text), res.timeToResponse);
                 break;
             case "open-command":
-                UiAdapter.addChatMessage(ChatTemplates.message('system', res.text));
+                UiAdapter.addChatMessage(ChatTemplates.message('system', res.text), res.timeToResponse);
                 if (open) {
                     window.open(res.url, '_blank');
                 }
                 break;
             case "image":
-                UiAdapter.addChatMessage(ChatTemplates.image(res.url));
+                UiAdapter.addChatMessage(ChatTemplates.image(res.url), res.timeToResponse);
                 break;
             default:
                 throw new Error(`Unknown response type: ${res.type}`);

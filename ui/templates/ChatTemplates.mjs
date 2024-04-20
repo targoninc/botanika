@@ -6,8 +6,25 @@ import {FormatParser} from "../js/FormatParser.mjs";
 import {AudioAssistant} from "../js/AudioAssistant.mjs";
 import {VoiceRecorder} from "../js/VoiceRecorder.mjs";
 import {Icon} from "../img/Icon.mjs";
+import {TimeParser} from "../js/TimeParser.mjs";
 
 export class ChatTemplates {
+    static messageContainer(domNode, time) {
+        return create("div")
+            .classes("message-container", "flex", "align-content")
+            .children(
+                domNode,
+                time ? ChatTemplates.messageTime(time) : null,
+            ).build();
+    }
+
+    static messageTime(time) {
+        return create("div")
+            .classes("message-time")
+            .text(TimeParser.format(time))
+            .build();
+    }
+
     static message(type, text, buttons = []) {
         return create("div")
             .classes("message", "text-message", "flex-v", type)
