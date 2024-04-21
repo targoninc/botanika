@@ -64,12 +64,17 @@ body, html {
     display: none;
 }
 
-.text-message, .data-message {
+.text-message, .data-message, .image-message {
     padding: var(--regular-padding);
     background: var(--background-alt);
     width: max-content;
     border-radius: var(--border-radius);
     max-width: calc(100% - 30px);
+}
+
+.image-message {
+    padding: 0;
+    overflow: hidden;
 }
 
 .data-message {
@@ -158,7 +163,7 @@ body, html {
 }
 
 .message.user {
-    border-left: 5px solid var(--color-4);
+    border-right: 5px solid var(--color-4);
 }
 
 .message.error {
