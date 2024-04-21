@@ -35,7 +35,9 @@ export class VoiceRecorder {
         this.recording = true;
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
-                this.mediaRecorder = new MediaRecorder(stream);
+                this.mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: 'audio/webm; codecs=opus'
+                });
                 this.audioContext = new AudioContext();
                 const source = this.audioContext.createMediaStreamSource(stream);
                 const processor = this.audioContext.createScriptProcessor(1024, 1, 1);
