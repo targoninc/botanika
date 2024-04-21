@@ -49,17 +49,17 @@ export class FormatParser {
             return false;
         }
 
+        return true;
+
         const firstLinePartsCount = firstLine.split(delimiter).length;
-        const badLines = lines.some(line => line.split(delimiter).length !== firstLinePartsCount);
+        const badLines = lines.map(line => line.split(delimiter).length !== firstLinePartsCount);
         return !badLines;
     }
 
     static toJson(text) {
         if (FormatParser.isJson(text)) {
-            console.log("Format is JSON");
             return JSON.parse(text);
         } else if (FormatParser.isCsv(text)) {
-            console.log("Format is CSV");
             const lines = text.split("\n");
             const firstLine = lines[0];
             const firstLineParts = firstLine.split(",");
@@ -79,7 +79,28 @@ export class FormatParser {
 
     static toCsv(text) {
         if (FormatParser.isCsv(text)) {
-            return text;
+            const lines = text.split("\n").filter(Boolean);
+            const delimiters = [",", ";", "\t"];
+            const firstLine = lines[0];
+
+            let delimiter;
+            for (let potentialDelimiter of delimiters) {
+                if (firstLine.includes(potentialDelimiter)) {
+                    delimiter = potentialDelimiter;
+                    break;
+                }
+            }
+
+            const firstLinePartsCount = firstLine.split(delimiter).length;
+            return lines.map(line => {
+                if (line.split(delimiter).length > firstLinePartsCount) {
+                    return line.split(delimiter).slice(0, firstLinePartsCount).join(delimiter);
+                } else if (line.split(delimiter).length < firstLinePartsCount) {
+                    return line + ",".repeat(firstLinePartsCount - line.split(delimiter).length);
+                } else {
+                    return line;
+                }
+            });
         }
         if (FormatParser.isJson(text)) {
             const json = JSON.parse(text);
