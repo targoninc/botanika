@@ -43,14 +43,19 @@ export class ChatTemplates {
     }
 
     static tableCell(text) {
+        const title = text;
+        text = text.length > 1000 ? text.substring(0, 1000) + "..." : text;
         if (text && text.toString().startsWith("http")) {
             return create("td")
+                .title(title)
                 .children(
                     create("a").href(text).target("_blank").text(text).build(),
-                )
-                .build();
+                ).build();
         }
-        return create("td").text(text).build();
+        return create("td")
+            .title(title)
+            .text(text)
+            .build();
     }
 
     static data(text) {
