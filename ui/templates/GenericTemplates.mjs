@@ -1,4 +1,4 @@
-import {create, signal} from "https://fjs.targoninc.com/f.js";
+import {create, ifjs, signal} from "https://fjs.targoninc.com/f.js";
 
 export class GenericTemplates {
     static materialIcon(icon, tag = "span") {
@@ -18,6 +18,23 @@ export class GenericTemplates {
                     .classes("button-text", "not-mobile")
                     .text(text)
                     .build()
+            ).build();
+    }
+
+    static buttonWithSpinner(text, onClick = () => {
+    }, icon = null, loadingState = signal(false), classes = []) {
+        return create("button")
+            .onclick(onClick)
+            .classes(...classes)
+            .children(
+                icon ? ifjs(loadingState, GenericTemplates.materialIcon(icon), true) : null,
+                ifjs(loadingState, create("span")
+                    .text(text)
+                    .build(), true),
+                ifjs(loadingState, GenericTemplates.spinner()),
+                ifjs(loadingState, create("span")
+                    .text("Loading...")
+                    .build()),
             ).build();
     }
 
@@ -42,6 +59,19 @@ export class GenericTemplates {
                     .styles("transform", transform)
                     .classes("red-dot", classExt)
                     .build()
+            ).build();
+    }
+
+    static spinner(circleCount = 4, delay = 0.2) {
+        return create("div")
+            .classes("spinner")
+            .children(
+                ...Array.from({length: circleCount}, (_, i) => {
+                    return create("div")
+                        .classes("spinner-circle")
+                        .styles("animation-delay", `-${i * delay}s`)
+                        .build();
+                })
             ).build();
     }
 }

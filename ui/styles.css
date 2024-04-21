@@ -365,3 +365,47 @@ button.active {
     width: 1rem;
     filter: invert(1);
 }
+
+.spinner {
+    --spinner-size: 1em;
+    --translation-size: calc(var(--spinner-size) / 2 - var(--spinner-size) / 10);
+    height: var(--spinner-size);
+    width: var(--spinner-size);
+    position: relative;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner > div {
+    box-sizing: border-box;
+    position: absolute;
+    width: 20%; /*This size will affect the distance of the dots from the center.*/
+    height: 20%; /*Should be the same as the width.*/
+    border-radius: 50%;
+    background-color: var(--foreground);
+    animation: spinning-circle 1.4s linear infinite;
+}
+
+@keyframes spinning-circle {
+    0% {
+        transform: rotate(0deg) translate(var(--translation-size)) rotate(0deg) scale(0.5);
+    }
+    50% {
+        transform: rotate(240deg) translate(var(--translation-size)) rotate(-240deg) scale(1);
+    }
+    100% {
+        transform: rotate(360deg) translate(var(--translation-size)) rotate(-360deg) scale(0.5);
+    }
+}
+
+.spinner > div::after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 15%;
+    height: 15%;
+    background-color: var(--foreground);
+    border-radius: 100%;
+}
