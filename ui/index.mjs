@@ -20,6 +20,7 @@ const router = new Router(routes, async (route, params) => {
     document.title = `botanika - ${route.title}`;
 
     const state = await Auth.userState();
+    store().get(StoreKeys.spotifyLoggedIn).value = state.context.apis.spotify !== null;
     switch (route.path) {
         case 'chat':
             if (!state.user) {
