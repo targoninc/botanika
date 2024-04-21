@@ -64,6 +64,8 @@ export class ChatTemplates {
     static data(text) {
         const json = FormatParser.toJson(text);
         const csv = FormatParser.toCsv(text);
+        console.log(json);
+        console.log(csv);
         const buttons = [
             GenericTemplates.button("JSON", () => {
                 UiAdapter.downloadJson(json);

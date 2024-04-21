@@ -56,13 +56,14 @@ export class FormatParser {
 
     static toJson(text) {
         if (FormatParser.isJson(text)) {
+            console.log("Format is JSON");
             return JSON.parse(text);
-        }
-        if (FormatParser.isCsv(text)) {
+        } else if (FormatParser.isCsv(text)) {
+            console.log("Format is CSV");
             const lines = text.split("\n");
             const firstLine = lines[0];
             const firstLineParts = firstLine.split(",");
-            const json = lines.slice(1).map(line => {
+            return lines.slice(1).map(line => {
                 const lineParts = line.split(",");
                 const obj = {};
                 firstLineParts.forEach((col, i) => {
@@ -70,9 +71,10 @@ export class FormatParser {
                 });
                 return obj;
             });
-            return JSON.stringify(json, null, 4);
+        } else {
+            console.log("No format detected");
+            return text;
         }
-        return text;
     }
 
     static toCsv(text) {
