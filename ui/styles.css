@@ -329,10 +329,6 @@ table {
     font-family: monospace;
 }
 
-table, th, td {
-    border: 1px solid var(--foreground-alt-3);
-}
-
 th, td {
     padding: 5px;
     text-align: left;
@@ -342,20 +338,27 @@ th {
     background: var(--background-alt);
 }
 
+tr {
+    border: 1px solid transparent;
+}
+
 tr:nth-child(even) {
     background-color: var(--background-alt-2);
 }
 
 tr:hover {
-    background-color: var(--background-alt);
+    background-color: var(--background-alt-3);
 }
 
 a {
+    font-family: sans-serif;
     color: var(--color-6);
+    text-decoration: none;
 }
 
 a:hover {
     color: var(--color-5);
+    text-decoration: underline;
 }
 
 button.active {
