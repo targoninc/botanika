@@ -36,7 +36,7 @@ export class VoiceRecorder {
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 this.mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'audio/webm; codecs=opus'
+                    mimeType: 'audio/webm; codecs=h264'
                 });
                 this.audioContext = new AudioContext();
                 const source = this.audioContext.createMediaStreamSource(stream);
@@ -114,7 +114,7 @@ export class VoiceRecorder {
 
         this.processing = true;
         const allAudioData = [this.audioHeader, ...this.audioChunks];
-        const audioBlob = new Blob(allAudioData, {type: 'audio/webm; codecs=opus'});
+        const audioBlob = new Blob(allAudioData, {type: 'audio/webm; codecs=h264'});
 
         const formData = new FormData();
         formData.append('file', audioBlob);
