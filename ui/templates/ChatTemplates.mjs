@@ -37,9 +37,11 @@ export class ChatTemplates {
                     .classes("flex")
                     .children(...buttons)
                     .build(),
-                create("div").classes("message-text", type).text(text).build(),
-            )
-            .build();
+                create("div")
+                    .classes("message-text", type)
+                    .text(text)
+                    .build(),
+            ).build();
     }
 
     static tableCell(text) {
@@ -53,6 +55,7 @@ export class ChatTemplates {
                 ).build();
         }
         return create("td")
+            .classes(title.length > 100 ? "long-text" : "_")
             .title(title)
             .text(text)
             .build();
@@ -68,9 +71,7 @@ export class ChatTemplates {
             GenericTemplates.button("CSV", () => {
                 UiAdapter.downloadCsv(csv);
             }, "file_download"),
-            GenericTemplates.button("Copy", () => {
-                navigator.clipboard.writeText(text);
-            }, "content_copy"),
+            ChatTemplates.copyButton(text),
         ];
         try {
             if (json.constructor === Array) {
@@ -118,6 +119,13 @@ export class ChatTemplates {
             console.log(e);
             return ChatTemplates.message("data", text, buttons);
         }
+    }
+
+    static copyButton(text) {
+        return GenericTemplates.button("Copy", () => {
+            navigator.clipboard.writeText(text);
+            UiAdapter.toast("Copied to clipboard");
+        }, "content_copy");
     }
 
     static voiceButton(isOn) {

@@ -74,4 +74,17 @@ export class GenericTemplates {
                 })
             ).build();
     }
+
+    static toast(message, type = "info", timeout = 5) {
+        const toast = create("div")
+            .classes("toast", type)
+            .text(message)
+            .build();
+
+        setTimeout(() => {
+            toast.remove();
+        }, timeout * 1000);
+
+        return toast;
+    }
 }

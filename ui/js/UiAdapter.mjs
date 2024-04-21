@@ -4,6 +4,7 @@ import {AudioAssistant} from "./AudioAssistant.mjs";
 import {Api} from "./Api.mjs";
 import {store} from "https://fjs.targoninc.com/f.js";
 import {MessageTypes} from "./MessageTypes.mjs";
+import {GenericTemplates} from "../templates/GenericTemplates.mjs";
 
 export class UiAdapter {
     /**
@@ -171,5 +172,10 @@ export class UiAdapter {
         const shouldOpen = res.responses.some(r => r.type === "open-command");
         UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
         return true;
+    }
+
+    static toast(message, type = "info", timeout = 5) {
+        const container = document.querySelector(".toast-container");
+        container.appendChild(GenericTemplates.toast(message, type, timeout));
     }
 }
