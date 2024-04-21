@@ -140,7 +140,7 @@ body, html {
     font-size: 2rem;
 }
 
-.send-button.sending {
+button.disabled {
     cursor: not-allowed;
     pointer-events: none;
     background: var(--background-alt-2);

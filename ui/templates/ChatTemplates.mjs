@@ -249,9 +249,9 @@ export class ChatTemplates {
 
     static sendButton() {
         const isSending = store().get("isSending");
-        const buttonClass = signal(isSending.value ? "sending" : "_");
+        const buttonClass = signal(isSending.value ? "disabled" : "_");
         isSending.subscribe((value) => {
-            buttonClass.value = value ? "sending" : "_";
+            buttonClass.value = value ? "disabled" : "_";
         });
 
         return GenericTemplates.buttonWithSpinner("Send", async () => {

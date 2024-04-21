@@ -1,4 +1,4 @@
-import {create, signal, store} from "https://fjs.targoninc.com/f.js";
+import {create, ifjs, signal, store} from "https://fjs.targoninc.com/f.js";
 import {Auth} from "../js/Auth.mjs";
 import {GenericTemplates} from "./GenericTemplates.mjs";
 import {StoreKeys} from "../js/StoreKeys.mjs";
@@ -6,8 +6,12 @@ import {StoreKeys} from "../js/StoreKeys.mjs";
 export class UserTemplates {
     static login(router) {
         const isLoading = signal(false);
+        const buttonClass = signal(isLoading.value ? "disabled" : "_");
         store().get(StoreKeys.isCheckingAuth).subscribe((checking) => {
             isLoading.value = checking;
+        });
+        isLoading.subscribe((loading) => {
+            buttonClass.value = loading ? "disabled" : "_";
         });
 
         const form = create("div")
@@ -28,7 +32,14 @@ export class UserTemplates {
                         GenericTemplates.buttonWithSpinner("Submit", async () => {
                             isLoading.value = true;
                             await Auth.authorizeFromForm(router);
-                        }, "login", isLoading),
+                        }, "login", isLoading, [buttonClass]),
+                        ifjs(store().get(StoreKeys.isCheckingAuth), create("div")
+                            .classes("flex", "align-content")
+                            .children(
+                                create("span")
+                                    .text("Loading context...")
+                                    .build()
+                            ).build())
                     ).build()
             ).build();
 
@@ -48,7 +59,7 @@ export class UserTemplates {
             inputClass.value = loading ? "disabled" : "_";
         });
 
-        return UserTemplates.inputField("Username", "username", inputClass);
+        return UserTemplates.inputField("Username", "username", "text", inputClass);
     }
 
     static passwordField(isLoading) {
@@ -57,10 +68,10 @@ export class UserTemplates {
             inputClass.value = loading ? "disabled" : "_";
         });
 
-        return UserTemplates.inputField("Password", "password", inputClass);
+        return UserTemplates.inputField("Password", "password", "password", inputClass);
     }
 
-    static inputField(label, id, inputClass) {
+    static inputField(label, id, type, inputClass) {
         return create("div")
             .classes("flex", "align-content")
             .children(
@@ -73,7 +84,7 @@ export class UserTemplates {
                     .name(id)
                     .classes(inputClass)
                     .autocomplete(id)
-                    .type("text")
+                    .type(type)
                     .build()
             ).build();
     }
