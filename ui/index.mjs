@@ -13,6 +13,7 @@ import {StoreKeys} from "./js/StoreKeys.mjs";
 store().set(StoreKeys.isSending, signal(false));
 store().set(StoreKeys.spotifyLoggedIn, signal(false));
 store().set(StoreKeys.currentLoudness, signal(0));
+store().set(StoreKeys.isCheckingAuth, signal(false));
 
 const router = new Router(routes, async (route, params) => {
     const content = document.getElementById('content');
