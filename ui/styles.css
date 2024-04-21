@@ -166,6 +166,10 @@ body, html {
     border-right: 5px solid var(--color-4);
 }
 
+.message.user.loading {
+    border-left: none;
+}
+
 .message.error {
     border-left: 5px solid var(--color-1);
 }

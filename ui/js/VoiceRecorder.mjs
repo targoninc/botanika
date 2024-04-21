@@ -8,6 +8,7 @@ export class VoiceRecorder {
     constructor() {
         this.threshold = 0.015;
         this.timeout = 2000;
+        this.mimeType = 'audio/webm; codecs=opus';
         this.audioChunks = [];
         this.currentVolume = 0;
         store().get(StoreKeys.currentLoudness).value = this.currentVolume;
@@ -36,7 +37,7 @@ export class VoiceRecorder {
         navigator.mediaDevices.getUserMedia({ audio: true })
             .then(stream => {
                 this.mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'audio/webm; codecs=h264'
+                    mimeType: this.mimeType
                 });
                 this.audioContext = new AudioContext();
                 const source = this.audioContext.createMediaStreamSource(stream);
@@ -114,7 +115,7 @@ export class VoiceRecorder {
 
         this.processing = true;
         const allAudioData = [this.audioHeader, ...this.audioChunks];
-        const audioBlob = new Blob(allAudioData, {type: 'audio/webm; codecs=h264'});
+        const audioBlob = new Blob(allAudioData, {type: this.mimeType});
 
         const formData = new FormData();
         formData.append('file', audioBlob);
