@@ -64,8 +64,6 @@ export class ChatTemplates {
     static data(text) {
         const json = FormatParser.toJson(text);
         const csv = FormatParser.toCsv(text);
-        console.log(json);
-        console.log(csv);
         const buttons = [
             GenericTemplates.button("JSON", () => {
                 UiAdapter.downloadJson(json);
@@ -87,10 +85,8 @@ export class ChatTemplates {
                                         ...Object.keys(json[0]).map((col) => {
                                             return create("th").text(col).build();
                                         }),
-                                    )
-                                    .build(),
-                            )
-                            .build(),
+                                    ).build(),
+                            ).build(),
                         create("tbody")
                             .children(
                                 ...json.map((row) => {
@@ -100,13 +96,10 @@ export class ChatTemplates {
                                                 const value = row[col] ?? "";
                                                 return ChatTemplates.tableCell(value);
                                             }),
-                                        )
-                                        .build();
+                                        ).build();
                                 }),
-                            )
-                            .build(),
-                    )
-                    .build();
+                            ).build(),
+                    ).build();
                 return create("div")
                     .classes("message", "data-message", "assistant", "flex-v")
                     .children(
