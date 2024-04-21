@@ -156,6 +156,12 @@ button.disabled {
     font-size: 2rem !important;
 }
 
+.send-button img.icon {
+    height: 2rem;
+    width: 2rem;
+    filter: none;
+}
+
 .chat-box-input-field:focus {
     outline: none;
 }

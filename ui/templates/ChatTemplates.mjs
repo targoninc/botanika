@@ -251,7 +251,7 @@ export class ChatTemplates {
 
         return GenericTemplates.buttonWithSpinner("Send", async () => {
             await UiAdapter.sendCurrentMessage();
-        }, "send", isSending, ["send-button", buttonClass]);
+        }, "/img/icon.svg", isSending, ["send-button", buttonClass]);
     }
 
     static resetContextButton() {

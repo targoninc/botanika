@@ -103,3 +103,7 @@ services:
     ports:
       - "6000:3000"
 ```
+
+# Credits
+
+- Logo Font: [Geist by Vercel](https://vercel.com/font)

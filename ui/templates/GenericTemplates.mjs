@@ -1,7 +1,14 @@
-import {create, ifjs, signal} from "https://fjs.targoninc.com/f.js";
+import {create, FjsObservable, ifjs, signal} from "https://fjs.targoninc.com/f.js";
 
 export class GenericTemplates {
-    static materialIcon(icon, tag = "span") {
+    static icon(icon, tag = "span") {
+        if ((icon.constructor === String && icon.includes(".")) || (icon.constructor === FjsObservable && icon.value.includes("."))) {
+            return create("img")
+                .classes("icon")
+                .src(icon)
+                .build();
+        }
+
         return create(tag)
             .classes("material-symbols-outlined")
             .text(icon)
@@ -13,7 +20,7 @@ export class GenericTemplates {
             .classes(...classes)
             .onclick(onclick)
             .children(
-                icon ? this.materialIcon(icon) : null,
+                icon ? this.icon(icon) : null,
                 create("span")
                     .classes("button-text", "not-mobile")
                     .text(text)
@@ -27,7 +34,7 @@ export class GenericTemplates {
             .onclick(onClick)
             .classes(...classes)
             .children(
-                icon ? ifjs(loadingState, GenericTemplates.materialIcon(icon), true) : null,
+                icon ? ifjs(loadingState, GenericTemplates.icon(icon), true) : null,
                 ifjs(loadingState, create("span")
                     .text(text)
                     .build(), true),

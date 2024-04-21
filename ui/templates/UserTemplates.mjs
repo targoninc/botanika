@@ -82,7 +82,7 @@ export class UserTemplates {
                 create("div")
                     .classes("flex", "align-content")
                     .children(
-                        icon ? GenericTemplates.materialIcon(icon) : null,
+                        icon ? GenericTemplates.icon(icon) : null,
                         create("label")
                             .attributes("for", id)
                             .text(label)
