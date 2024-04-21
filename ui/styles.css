@@ -25,6 +25,7 @@
     --horizontal-input-padding: 0.6rem;
     --input-padding: var(--vertical-input-padding) var(--horizontal-input-padding);
     --gap: 5px;
+    --big-gap: 10px;
     --spotify-green: #1DB954;
     --spotify-black: #191414;
 }
@@ -258,6 +259,10 @@ button.disabled {
     display: flex;
     gap: var(--gap);
     flex-wrap: wrap;
+}
+
+.big-gap {
+    gap: var(--big-gap);
 }
 
 .align-content {

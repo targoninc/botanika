@@ -18,7 +18,7 @@ export class UserTemplates {
             .classes("full-center")
             .children(
                 create("div")
-                    .classes("flex-v", "padded", "rounded", "centered", "align-content")
+                    .classes("flex-v", "big-gap", "padded", "rounded", "centered", "align-content")
                     .children(
                         UserTemplates.usernameField(isLoading),
                         UserTemplates.passwordField(isLoading),
@@ -29,9 +29,11 @@ export class UserTemplates {
                                     .classes("login-error")
                                     .build(),
                             ).build(),
-                        GenericTemplates.buttonWithSpinner("Submit", async () => {
+                        GenericTemplates.buttonWithSpinner("Log in", async () => {
                             isLoading.value = true;
-                            await Auth.authorizeFromForm(router);
+                            await Auth.authorizeFromForm(router, () => {
+                                isLoading.value = false;
+                            });
                         }, "login", isLoading, [buttonClass]),
                         ifjs(store().get(StoreKeys.isCheckingAuth), create("div")
                             .classes("flex", "align-content")
@@ -46,7 +48,9 @@ export class UserTemplates {
         form.addEventListener("keydown", async (e) => {
             if (e.key === "Enter") {
                 isLoading.value = true;
-                await Auth.authorizeFromForm(router);
+                await Auth.authorizeFromForm(router, () => {
+                    isLoading.value = false;
+                });
             }
         });
 
@@ -59,7 +63,7 @@ export class UserTemplates {
             inputClass.value = loading ? "disabled" : "_";
         });
 
-        return UserTemplates.inputField("Username", "username", "text", inputClass);
+        return UserTemplates.inputField("Username", "username", "text", "face", inputClass);
     }
 
     static passwordField(isLoading) {
@@ -68,17 +72,22 @@ export class UserTemplates {
             inputClass.value = loading ? "disabled" : "_";
         });
 
-        return UserTemplates.inputField("Password", "password", "password", inputClass);
+        return UserTemplates.inputField("Password", "password", "password", "password", inputClass);
     }
 
-    static inputField(label, id, type, inputClass) {
+    static inputField(label, id, type, icon, inputClass) {
         return create("div")
-            .classes("flex", "align-content")
+            .classes("flex-v")
             .children(
-                create("label")
-                    .attributes("for", id)
-                    .text(label)
-                    .build(),
+                create("div")
+                    .classes("flex", "align-content")
+                    .children(
+                        icon ? GenericTemplates.materialIcon(icon) : null,
+                        create("label")
+                            .attributes("for", id)
+                            .text(label)
+                            .build(),
+                    ).build(),
                 create("input")
                     .id(id)
                     .name(id)

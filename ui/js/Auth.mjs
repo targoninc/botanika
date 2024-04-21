@@ -11,12 +11,13 @@ export class Auth {
         return res;
     }
 
-    static async authorizeFromForm(router) {
+    static async authorizeFromForm(router, onError = () => {}) {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         Auth.authorize(username, password).then((res) => {
             if (res.error) {
                 UiAdapter.showLoginError(res.error);
+                onError();
                 return;
             }
             router.navigate("chat");
