@@ -30,7 +30,7 @@
     --spotify-black: #191414;
 }
 
-@media (pointer:none), (pointer:coarse) {
+@media (pointer: none), (pointer: coarse) {
     :root {
         --font-size: 20px;
     }
@@ -150,6 +150,20 @@ button.disabled {
 
 .send-button * {
     font-size: 2rem;
+}
+
+.send-button.disabled img {
+    filter: grayscale(1) !important;
+    animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .send-button .material-symbols-outlined {

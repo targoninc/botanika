@@ -45,30 +45,6 @@ export class GenericTemplates {
             ).build();
     }
 
-    static redDot(onState, scaleState) {
-        const classExt = signal(onState.value ? "_" : "hidden");
-        onState.subscribe((state) => {
-            classExt.value = state ? "_" : "hidden";
-        });
-        const transform = signal(`scale(${scaleState.value})`);
-        scaleState.subscribe((state) => {
-            const inverseLinear = (1 - state);
-            const squaredInverse = inverseLinear * inverseLinear * inverseLinear;
-            const factor = 1 - squaredInverse;
-            const scale = Math.max(.5, Math.min(1.5, .5 + factor));
-            transform.value = `scale(${scale})`;
-        });
-
-        return create("div")
-            .classes("red-dot-container")
-            .children(
-                create("div")
-                    .styles("transform", transform)
-                    .classes("red-dot", classExt)
-                    .build()
-            ).build();
-    }
-
     static spinner(circleCount = 4, delay = 0.2) {
         return create("div")
             .classes("spinner")
@@ -93,5 +69,29 @@ export class GenericTemplates {
         }, timeout * 1000);
 
         return toast;
+    }
+
+    static redDot(onState, scaleState) {
+        const classExt = signal(onState.value ? "_" : "hidden");
+        onState.subscribe((state) => {
+            classExt.value = state ? "_" : "hidden";
+        });
+        const transform = signal(`scale(${scaleState.value})`);
+        scaleState.subscribe((state) => {
+            const inverseLinear = (1 - state);
+            const squaredInverse = inverseLinear * inverseLinear * inverseLinear;
+            const factor = 1 - squaredInverse;
+            const scale = Math.max(.5, Math.min(1.5, .5 + factor));
+            transform.value = `scale(${scale})`;
+        });
+
+        return create("div")
+            .classes("red-dot-container")
+            .children(
+                create("div")
+                    .styles("transform", transform)
+                    .classes("red-dot", classExt)
+                    .build()
+            ).build();
     }
 }

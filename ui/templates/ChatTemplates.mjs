@@ -249,9 +249,9 @@ export class ChatTemplates {
             buttonClass.value = value ? "disabled" : "_";
         });
 
-        return GenericTemplates.buttonWithSpinner("Send", async () => {
+        return GenericTemplates.button("Send", async () => {
             await UiAdapter.sendCurrentMessage();
-        }, "/img/icon.svg", isSending, ["send-button", buttonClass]);
+        }, "/img/icon.svg", ["send-button", buttonClass]);
     }
 
     static resetContextButton() {
