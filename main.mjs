@@ -1,7 +1,7 @@
 import {fileURLToPath} from "url";
 import path from "path";
 import dotenv from "dotenv";
-import {Features} from "./lib/endpoints/Features.mjs";
+import {Features} from "./lib/Features.mjs";
 import {activeEndpoints} from "./lib/endpoints/ActiveEndpoints.mjs";
 
 dotenv.config();

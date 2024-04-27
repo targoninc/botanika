@@ -44,23 +44,23 @@ const router = new Router(routes, async (route, params) => {
             content.innerHTML = "";
             content.appendChild(UserTemplates.login(router));
             break;
-        case 'spotify-login-success':
+        case 'api-login-success':
             if (!state.user) {
                 await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.redirectPage('Spotify Login Successful', 1, '--close'));
-            Broadcast.send('spotify-login-success');
+            Broadcast.send('api-login-success');
             break;
-        case 'spotify-logout-success':
+        case 'api-logout-success':
             if (!state.user) {
                 await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.redirectPage('Spotify Logout Successful', 1, '--close'));
-            Broadcast.send('spotify-logout-success');
+            Broadcast.send('api-logout-success');
             break;
         default:
             content.innerHTML = "404";
@@ -76,10 +76,10 @@ Broadcast.listen((e) => {
     }
     const message = e.data;
     switch (message) {
-        case 'spotify-login-success':
+        case 'api-login-success':
             store().get(StoreKeys.spotifyLoggedIn).value = true;
             break;
-        case 'spotify-logout-success':
+        case 'api-logout-success':
             store().get(StoreKeys.spotifyLoggedIn).value = false;
             break;
     }
