@@ -23,7 +23,8 @@
     "openai": "^4.24.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
-    "qs": "^6.11.2"
+    "qs": "^6.11.2",
+    "ws": "^8.16.0"
   },
   "devDependencies": {
     "webpack-cli": "^5.1.4"
