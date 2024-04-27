@@ -159,7 +159,7 @@ export class UiAdapter {
     static afterMessage(res) {
         UiAdapter.removeLoading();
         if (res.error) {
-            UiAdapter.addChatMessage(ChatTemplates.message('error', res.error));
+            UiAdapter.toast(res.error, 'error');
             return false;
         }
 
