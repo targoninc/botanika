@@ -210,17 +210,17 @@ export class ChatTemplates {
         const textState = signal(loggedIn.value ? "Spotify" : "Log into Spotify");
         const iconState = signal(loggedIn.value ? "graphic_eq" : "graphic_eq");
         const buttonClass = signal(loggedIn.value ? "active" : "_");
-        const openUrl = signal(loggedIn.value ? "/api/api-logout" : "/api/api-login");
+        const openUrl = signal(loggedIn.value ? "/api/spotify-logout" : "/api/spotify-login");
         loggedIn.subscribe((value) => {
             textState.value = value ? "Spotify" : "Log into Spotify";
             iconState.value = value ? "graphic_eq" : "graphic_eq";
             buttonClass.value = value ? "active" : "_";
-            openUrl.value = value ? "/api/api-logout" : "/api/api-login";
+            openUrl.value = value ? "/api/spotify-logout" : "/api/spotify-login";
         });
 
         return GenericTemplates.button(textState, async () => {
             window.open(openUrl.value, "_blank");
-        }, iconState, ["api-button", buttonClass]);
+        }, iconState, ["spotify-button", buttonClass]);
     }
 
     static logoutButton(context, router) {

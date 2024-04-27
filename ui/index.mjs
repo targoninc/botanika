@@ -44,23 +44,23 @@ const router = new Router(routes, async (route, params) => {
             content.innerHTML = "";
             content.appendChild(UserTemplates.login(router));
             break;
-        case 'api-login-success':
+        case 'spotify-login-success':
             if (!state.user) {
                 await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.redirectPage('Spotify Login Successful', 1, '--close'));
-            Broadcast.send('api-login-success');
+            Broadcast.send('spotify-login-success');
             break;
-        case 'api-logout-success':
+        case 'spotify-logout-success':
             if (!state.user) {
                 await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.redirectPage('Spotify Logout Successful', 1, '--close'));
-            Broadcast.send('api-logout-success');
+            Broadcast.send('spotify-logout-success');
             break;
         default:
             content.innerHTML = "404";
