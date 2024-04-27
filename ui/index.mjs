@@ -9,6 +9,7 @@ import {Router} from "./js/Router.mjs";
 import {routes} from "./js/Routes.mjs";
 import {signal, store} from "https://fjs.targoninc.com/f.js";
 import {StoreKeys} from "./js/StoreKeys.mjs";
+import {Api} from "./js/Api.mjs";
 
 store().set(StoreKeys.isSending, signal(false));
 store().set(StoreKeys.spotifyLoggedIn, signal(false));
@@ -84,3 +85,20 @@ Broadcast.listen((e) => {
             break;
     }
 });
+
+const checkingUpdates = signal(false);
+setInterval(async () => {
+    if (checkingUpdates.value) {
+        return;
+    }
+
+    checkingUpdates.value = true;
+    Api.askForChanges().then((res) => {
+        checkingUpdates.value = false;
+        if (res) {
+            UiAdapter.afterMessage(res);
+            store().get("isSending").value = false;
+            UiAdapter.focusChatInput();
+        }
+    });
+}, 5000);
