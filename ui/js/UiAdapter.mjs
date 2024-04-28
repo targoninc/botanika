@@ -74,11 +74,12 @@ export class UiAdapter {
         document.querySelector('.chat-box-input-field').value = value;
     }
 
-    static setHistory(res, open, speak) {
+    static setHistory(res, openLast, speak) {
         const messages = document.querySelector('.chat-box-messages');
         messages.innerHTML = "";
         for (const r of res) {
             const isLast = res.indexOf(r) === res.length - 1;
+            const open = openLast && isLast;
             UiAdapter.handleMessage(r, open, speak && isLast);
         }
     }
