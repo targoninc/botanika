@@ -38,4 +38,46 @@ export class MarkdownTemplates {
             .text(text)
             .build();
     }
+
+    static bold(text) {
+        return create("strong")
+            .classes("markdown")
+            .text(text)
+            .build();
+    }
+
+    static italic(text) {
+        return create("em")
+            .classes("markdown")
+            .text(text)
+            .build();
+    }
+
+    static boldItalic(text) {
+        return create("strong")
+            .classes("markdown", "italic")
+            .text(text)
+            .build();
+    }
+
+    static quote(text) {
+        return create("blockquote")
+            .classes("markdown")
+            .text(text)
+            .build();
+    }
+
+    static listItem(text) {
+        return create("li")
+            .classes("markdown")
+            .text(text)
+            .build();
+    }
+
+    static numberedListItem(text, number) {
+        return create("li")
+            .classes("markdown")
+            .text(`${number}. ${text}`)
+            .build();
+    }
 }
