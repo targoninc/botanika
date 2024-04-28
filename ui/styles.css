@@ -332,6 +332,7 @@ button, input, textarea {
     background: var(--background-alt);
     color: var(--foreground);
     padding: var(--input-padding);
+    font-family: sans-serif;
 }
 
 input {
@@ -373,6 +374,14 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: var(--background-alt-3);
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+}
+
+.send-button {
+    align-self: end;
 }
 
 a {

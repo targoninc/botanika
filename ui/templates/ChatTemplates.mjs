@@ -7,6 +7,7 @@ import {VoiceRecorder} from "../js/VoiceRecorder.mjs";
 import {TimeParser} from "../js/TimeParser.mjs";
 import {GenericTemplates} from "./GenericTemplates.mjs";
 import {StoreKeys} from "../js/StoreKeys.mjs";
+import {MarkdownProcessor} from "../js/MarkdownProcessor.mjs";
 
 export class ChatTemplates {
     static messageContainer(domNode, type, time) {
@@ -38,9 +39,10 @@ export class ChatTemplates {
                     .children(...buttons)
                     .build(),
                 create("div")
-                    .classes("message-text", type)
-                    .text(text)
-                    .build(),
+                    .classes("message-text", "flex-v", type)
+                    .children(
+                        MarkdownProcessor.process(text),
+                    ).build(),
             ).build();
     }
 
@@ -231,14 +233,21 @@ export class ChatTemplates {
     }
 
     static chatInputField() {
-        return create("input")
+        const resizeField = (e) => {
+            e.target.style.height = "auto";
+            e.target.style.height = (e.target.scrollHeight - 13) + "px";
+        }
+
+        return create("textarea")
             .classes("chat-box-input-field")
             .placeholder("Enter a message...")
+            .attributes("rows", "1")
             .onkeydown((e) => {
                 if (e.key === "Enter" && e.ctrlKey) {
                     UiAdapter.sendCurrentMessage();
                 }
             })
+            .oninput(resizeField)
             .build();
     }
 
