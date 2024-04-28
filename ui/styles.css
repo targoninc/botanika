@@ -18,7 +18,7 @@
     --color-7: #A63BFF;
     --color-8: #FF3BDE;
     --color-9: #FF3B8C;
-    --font-size: 16px;
+    --font-size: 18px;
     --regular-padding: 10px;
     --small-padding: 5px;
     --vertical-input-padding: 0.4rem;
@@ -340,6 +340,11 @@ blockquote {
     margin: 0;
     padding: var(--regular-padding);
     border-radius: var(--border-radius);
+}
+
+.emoji img {
+    height: 1rem;
+    width: 1rem;
 }
 
 input {

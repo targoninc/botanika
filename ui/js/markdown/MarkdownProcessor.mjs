@@ -1,4 +1,5 @@
-import {MarkdownTemplates} from "../templates/MarkdownTemplates.mjs";
+import {MarkdownTemplates} from "./MarkdownTemplates.mjs";
+import {emoji} from "./Emojis.mjs";
 
 export class MarkdownProcessor {
     static process(text) {
@@ -67,6 +68,7 @@ export class MarkdownProcessor {
             {name: 'italic', regex: /\*(.*?)\*/g},
             {name: 'link', regex: /\[(.*?)]\((.*?)\)/g},
             {name: 'image', regex: /!\[(.*?)]\((.*?)\)/g},
+            {name: 'emoji', regex: /:(.*?):/g}
         ];
         // Keep examining the text until all formatting has been extracted
         while (text.length > 0) {
@@ -79,7 +81,6 @@ export class MarkdownProcessor {
                 type.regex.lastIndex = 0;     // Reset lastIndex to start search from beginning of string
                 const match = type.regex.exec(text);
                 if (match && match.index < nearest.index) {
-                    console.log(match, type.name);
                     nearest = match;
                     nearestType = type.name;
                 }
@@ -111,7 +112,6 @@ export class MarkdownProcessor {
 
     static processText(text) {
         const elements = MarkdownProcessor.parseText(text);
-        console.log(text, elements.length);
         return MarkdownProcessor.generateTextHtml(elements);
     }
 
@@ -191,6 +191,9 @@ export class MarkdownProcessor {
                     break;
                 case 'image':
                     nodes.push(MarkdownTemplates.image(element.src, element.alt));
+                    break;
+                case 'emoji':
+                    nodes.push(emoji(element.text));
                     break;
                 default:
                     nodes.push(MarkdownTemplates.text(element.text));

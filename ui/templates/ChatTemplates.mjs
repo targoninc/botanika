@@ -7,7 +7,7 @@ import {VoiceRecorder} from "../js/VoiceRecorder.mjs";
 import {TimeParser} from "../js/TimeParser.mjs";
 import {GenericTemplates} from "./GenericTemplates.mjs";
 import {StoreKeys} from "../js/StoreKeys.mjs";
-import {MarkdownProcessor} from "../js/MarkdownProcessor.mjs";
+import {MarkdownProcessor} from "../js/markdown/MarkdownProcessor.mjs";
 
 export class ChatTemplates {
     static messageContainer(domNode, type, time) {
