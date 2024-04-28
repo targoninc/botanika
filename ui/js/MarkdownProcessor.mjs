@@ -73,19 +73,22 @@ export class MarkdownProcessor {
         // Keep examining the text until all formatting has been extracted
         while (text.length > 0) {
             // Find the nearest formatting
-            let nearest = {index: text.length};
+            let nearest = {
+                index: text.length
+            };
             let nearestType;
 
             for (let type of formattingTypes) {
                 const match = type.regex.exec(text);
                 if (match && match.index < nearest.index) {
+                    console.log(match, type.name);
                     nearest = match;
                     nearestType = type.name;
                 }
             }
 
             // Add the text preceding the nearest match (if any) and the nearest match (if any) to the elements
-            if (nearest.index > 0) {
+            if (nearest.index > -1) {
                 const element = {
                     type: 'text',
                     text: text.substring(0, nearest.index)
