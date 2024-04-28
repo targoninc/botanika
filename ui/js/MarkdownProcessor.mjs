@@ -60,16 +60,14 @@ export class MarkdownProcessor {
 
     static parseText(text) {
         const elements = [];
-
         // Create regular expressions for each formatting type
         const formattingTypes = [
             {name: 'boldItalic', regex: /\*\*\*(.*?)\*\*\*/g},
-            {name: 'bold', regex: /\*\*(.*?)\*\*/g},
+            {name: 'bold', regex: /\*\*(.*?)?\*\*/g},
             {name: 'italic', regex: /\*(.*?)\*/g},
             {name: 'link', regex: /\[(.*?)]\((.*?)\)/g},
             {name: 'image', regex: /!\[(.*?)]\((.*?)\)/g},
         ];
-
         // Keep examining the text until all formatting has been extracted
         while (text.length > 0) {
             // Find the nearest formatting
@@ -77,8 +75,8 @@ export class MarkdownProcessor {
                 index: text.length
             };
             let nearestType;
-
             for (let type of formattingTypes) {
+                type.regex.lastIndex = 0;     // Reset lastIndex to start search from beginning of string
                 const match = type.regex.exec(text);
                 if (match && match.index < nearest.index) {
                     console.log(match, type.name);
@@ -105,11 +103,9 @@ export class MarkdownProcessor {
                 }
                 elements.push(element);
             }
-
             // Remove the processed portion of the text
             text = text.substring(nearest.index + (nearest[0] ? nearest[0].length : 0));
         }
-
         return elements;
     }
 
@@ -120,7 +116,7 @@ export class MarkdownProcessor {
     }
 
     static generateHtml(elements) {
-        const nodes = [];
+        let nodes = [];
         for (let element of elements) {
             const parsedNodes = MarkdownProcessor.processText(element.text);
             if (parsedNodes.length > 1) {
@@ -154,6 +150,24 @@ export class MarkdownProcessor {
                 default:
                     nodes.push(MarkdownTemplates.paragraph(element.textNode));
                     break;
+            }
+        }
+        nodes = MarkdownProcessor.postProcessBlockQuotes(nodes);
+        return nodes;
+    }
+
+    static postProcessBlockQuotes(nodes) {
+        // if any blockquote is followed by another blockquote,
+        // merge their children into the first blockquote and remove the second blockquote
+        for (let i = 0; i < nodes.length - 1; i++) {
+            if (nodes[i].tagName === 'BLOCKQUOTE' && nodes[i + 1].tagName === 'BLOCKQUOTE') {
+                const firstBlockQuote = nodes[i];
+                const secondBlockQuote = nodes[i + 1];
+                for (let child of secondBlockQuote.children) {
+                    firstBlockQuote.appendChild(child);
+                }
+                nodes.splice(i + 1, 1);
+                i--;
             }
         }
         return nodes;

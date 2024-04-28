@@ -62,7 +62,7 @@ export class MarkdownTemplates {
 
     static quote(text) {
         return create("blockquote")
-            .classes("markdown")
+            .classes("markdown", "flex-v")
             .children(text)
             .build();
     }

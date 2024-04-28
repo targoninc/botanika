@@ -335,6 +335,13 @@ button, input, textarea {
     font-family: sans-serif;
 }
 
+blockquote {
+    background: var(--background);
+    margin: 0;
+    padding: var(--regular-padding);
+    border-radius: var(--border-radius);
+}
+
 input {
     padding: var(--input-padding);
     border-radius: var(--border-radius);
