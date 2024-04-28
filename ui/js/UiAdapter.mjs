@@ -2,9 +2,10 @@ import {ChatTemplates} from "../templates/ChatTemplates.mjs";
 import {Synthesizer} from "./Synthesizer.mjs";
 import {AudioAssistant} from "./AudioAssistant.mjs";
 import {Api} from "./Api.mjs";
-import {store} from "https://fjs.targoninc.com/f.js";
+import {signal, store} from "https://fjs.targoninc.com/f.js";
 import {MessageTypes} from "./MessageTypes.mjs";
 import {GenericTemplates} from "../templates/GenericTemplates.mjs";
+import {StoreKeys} from "./StoreKeys.mjs";
 
 export class UiAdapter {
     /**
@@ -74,11 +75,12 @@ export class UiAdapter {
         document.querySelector('.chat-box-input-field').value = value;
     }
 
-    static setHistory(res, open, speak) {
+    static setHistory(res, openLast, speak) {
         const messages = document.querySelector('.chat-box-messages');
         messages.innerHTML = "";
         for (const r of res) {
             const isLast = res.indexOf(r) === res.length - 1;
+            const open = openLast && isLast;
             UiAdapter.handleMessage(r, open, speak && isLast);
         }
     }
@@ -159,7 +161,7 @@ export class UiAdapter {
     static afterMessage(res) {
         UiAdapter.removeLoading();
         if (res.error) {
-            UiAdapter.addChatMessage(ChatTemplates.message('error', res.error));
+            UiAdapter.toast(res.error, 'error');
             return false;
         }
 
@@ -171,6 +173,8 @@ export class UiAdapter {
         const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
         const shouldOpen = res.responses.some(r => r.type === "open-command");
         UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
+
+        store().get(StoreKeys.spotifyLoggedIn).value = !!res.context.apis.spotify;
         return true;
     }
 

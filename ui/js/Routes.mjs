@@ -8,15 +8,15 @@ export const routes = [
         title: 'Login'
     },
     {
-        path: 'api-login-success',
+        path: 'spotify-login-success',
         title: 'Spotify Login Success'
     },
     {
-        path: 'api-logout-success',
+        path: 'spotify-logout-success',
         title: 'Spotify Logout Success'
     },
     {
-        path: 'api-login-success-mock',
+        path: 'spotify-login-success-mock',
         title: 'Spotify Login Success Mock'
     }
 ];

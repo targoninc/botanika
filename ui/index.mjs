@@ -9,6 +9,7 @@ import {Router} from "./js/Router.mjs";
 import {routes} from "./js/Routes.mjs";
 import {signal, store} from "https://fjs.targoninc.com/f.js";
 import {StoreKeys} from "./js/StoreKeys.mjs";
+import {Api} from "./js/Api.mjs";
 
 store().set(StoreKeys.isSending, signal(false));
 store().set(StoreKeys.spotifyLoggedIn, signal(false));
@@ -21,7 +22,7 @@ const router = new Router(routes, async (route, params) => {
     document.title = `botanika - ${route.title}`;
 
     const state = await Auth.userState();
-    store().get(StoreKeys.spotifyLoggedIn).value = state.context ? state.context.apis.spotify !== null : false;
+    store().get(StoreKeys.spotifyLoggedIn).value = state.context ? !!state.context.apis.spotify : false;
     switch (route.path) {
         case 'chat':
             if (!state.user) {
@@ -44,23 +45,23 @@ const router = new Router(routes, async (route, params) => {
             content.innerHTML = "";
             content.appendChild(UserTemplates.login(router));
             break;
-        case 'api-login-success':
+        case 'spotify-login-success':
             if (!state.user) {
                 await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.redirectPage('Spotify Login Successful', 1, '--close'));
-            Broadcast.send('api-login-success');
+            Broadcast.send('spotify-login-success');
             break;
-        case 'api-logout-success':
+        case 'spotify-logout-success':
             if (!state.user) {
                 await router.navigate('login');
                 break;
             }
             content.innerHTML = "";
             content.appendChild(PageTemplates.redirectPage('Spotify Logout Successful', 1, '--close'));
-            Broadcast.send('api-logout-success');
+            Broadcast.send('spotify-logout-success');
             break;
         default:
             content.innerHTML = "404";
@@ -76,11 +77,36 @@ Broadcast.listen((e) => {
     }
     const message = e.data;
     switch (message) {
-        case 'api-login-success':
+        case 'spotify-login-success':
             store().get(StoreKeys.spotifyLoggedIn).value = true;
             break;
-        case 'api-logout-success':
+        case 'spotify-logout-success':
             store().get(StoreKeys.spotifyLoggedIn).value = false;
             break;
     }
 });
+
+const checkingUpdates = signal(false);
+setInterval(async () => {
+    if (checkingUpdates.value || store().get("isSending").value) {
+        return;
+    }
+
+    checkingUpdates.value = true;
+    Api.askForChanges().then((res) => {
+        checkingUpdates.value = false;
+        if (res) {
+            if (res.error.includes("Not authenticated")) {
+                if (router.currentRoute.path === 'login') {
+                    return;
+                }
+                router.navigate('login');
+                return;
+            }
+
+            UiAdapter.afterMessage(res);
+            store().get("isSending").value = false;
+            UiAdapter.focusChatInput();
+        }
+    });
+}, 30000);

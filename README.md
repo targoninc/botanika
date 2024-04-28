@@ -1,6 +1,6 @@
 # Set up Database (MariaDB / MySQL)
 
-- Run the script `lib/db/database.sql` in your database. Modify the script if you want to use a different database or other column formats.
+- Run the script [lib/db/database.sql](./lib/db/database.sql) in your database. Modify the script if you want to use a different database or other column formats (e.g. user id as a varchar instead of bigint).
 - Create a user for the database and grant it the rights to read and write to the database.
 - Create an `.env` file in the root directory of the project and add the following variables with the values of the new user:
   - MYSQL_URL
@@ -8,7 +8,12 @@
   - MYSQL_PASSWORD
 - Add the following variable to the `.env` file to set the session secret (can be any string):
   - SESSION_SECRET
-    
+
+# Needed environment variables for specific features
+
+It is recommended to create an `.env` file in the root directory of the project and add the variables there.
+Without the quired variables the features will not work.
+
 # Run
 
 ```bash
@@ -19,20 +24,18 @@ npm install
 npm run startLocal
 ```
 
-# Needed environment variables for specific features
+## LLM provider (highly recommended)
 
-It is recommended to create an `.env` file in the root directory of the project and add the variables there.
-Without the quired variables the features will not work.
-
-## OpenAI / Groq (highly recommended)
-
-The LLM APIs are used to generate a lot of the bot's responses.
+An LLM provider is used to generate most responses.
 
 Used in the following features:
 - Database integration
+- Responding to general questions
+- Opening URLs for services
+- Creating and working with files
 
 Need to set:
-- COMPLETION_PROVIDER= openai | groq
+- COMPLETION_PROVIDER= openai | groq | ollama
 
 ### OpenAI
 
@@ -46,9 +49,33 @@ Need to set:
 
 - GROQ_API_KEY
 
+### Ollama
+
+[Install Ollama on your system](https://github.com/ollama/ollama?tab=readme-ov-file#ollama)
+
+After setting up, botanika will automatically use the Ollama API and download the desired models.
+
+## Voice recognition
+
+### OpenAI
+
+[Get API key](https://platform.openai.com/api-keys)
+
+- OPENAI_API_KEY
+
+### Local (doesn't work)
+
+Used package: [whisper-tnode](https://www.npmjs.com/package/whisper-tnode)
+
+**Please install `make` first!**
+
+#### Known issues
+
+- Doesn't return transcriptions at all
+
 ## Database integration
 
-This feature currently only works with MariaDB/MySQL.
+This feature currently only works with MariaDB/MySQL and requires any LLM provider to be set up.
 
 To set up the database integration, **it is recommended to create a second user** for the database with only the rights to read from the database.
 Use those credentials with the following variables:
@@ -101,7 +128,18 @@ services:
       - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
     ports:
-      - "6000:3000"
+      - "3000:3000"
+  
+  # Add this service if you want to host a MariaDB database with the bot
+  db:
+    image: mariadb:latest
+    container_name: BOTANIKA_DB
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - ./lib/db/database.sql:/docker-entrypoint-initdb.d/database.sql
 ```
 
 # Credits
