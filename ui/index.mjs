@@ -96,6 +96,14 @@ setInterval(async () => {
     Api.askForChanges().then((res) => {
         checkingUpdates.value = false;
         if (res) {
+            if (res.error.includes("Not authenticated")) {
+                if (router.currentRoute.path === 'login') {
+                    return;
+                }
+                router.navigate('login');
+                return;
+            }
+
             UiAdapter.afterMessage(res);
             store().get("isSending").value = false;
             UiAdapter.focusChatInput();

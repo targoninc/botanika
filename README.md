@@ -63,19 +63,15 @@ After setting up, botanika will automatically use the Ollama API and download th
 
 - OPENAI_API_KEY
 
-### Local (probably doesn't work)
+### Local (doesn't work)
 
-Used package: [whisper-node](https://www.npmjs.com/package/whisper-node)
+Used package: [whisper-tnode](https://www.npmjs.com/package/whisper-tnode)
 
-**Setup:**
+**Please install `make` first!**
 
-Follow this [installation instruction](https://github.com/ggerganov/whisper.cpp/issues/168#issuecomment-1889963673).
+#### Known issues
 
-**Probably doesn't work on windows, because cmake fails**
-
-```bash
-npx whisper-node download
-```
+- Doesn't return transcriptions at all
 
 ## Database integration
 
