@@ -4,14 +4,14 @@ export class MarkdownTemplates {
     static heading(text, level = 1) {
         return create(`h${level}`)
             .classes("markdown")
-            .text(text)
+            .children(text)
             .build();
     }
 
     static paragraph(text) {
         return create("p")
             .classes("markdown")
-            .text(text)
+            .children(text)
             .build();
     }
 
@@ -63,21 +63,40 @@ export class MarkdownTemplates {
     static quote(text) {
         return create("blockquote")
             .classes("markdown")
-            .text(text)
+            .children(text)
             .build();
     }
 
     static listItem(text) {
         return create("li")
             .classes("markdown")
-            .text(text)
+            .children(text)
             .build();
     }
 
     static numberedListItem(text, number) {
         return create("li")
             .classes("markdown")
-            .text(`${number}. ${text}`)
+            .children(
+                create("span")
+                    .classes("markdown")
+                    .text(`${number}. `)
+                    .build(),
+                text
+            ).build();
+    }
+
+    static textWrapper(children) {
+        return create("span")
+            .classes("markdown")
+            .children(children)
+            .build();
+    }
+
+    static text(text) {
+        return create("span")
+            .classes("markdown")
+            .text(text)
             .build();
     }
 }
