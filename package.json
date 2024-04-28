@@ -20,6 +20,7 @@
     "groq-sdk": "^0.3.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.6.5",
+    "ollama": "^0.5.0",
     "openai": "^4.24.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
