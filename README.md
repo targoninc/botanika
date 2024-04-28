@@ -111,6 +111,17 @@ services:
       - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
     ports:
       - "3000:3000"
+  
+  # Add this service if you want to host a MariaDB database with the bot
+  db:
+    image: mariadb:latest
+    container_name: BOTANIKA_DB
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - ./lib/db/database.sql:/docker-entrypoint-initdb.d/database.sql
 ```
 
 # Credits
