@@ -99,11 +99,9 @@ const renderEmoji = (emoji) => {
 }
 
 export const emoji = (tag) => {
-    console.log(tag);
     const emoji = getEmoji(tag);
     if (!emoji) {
         return create("span").text(tag).build();
     }
-    console.log(emoji);
     return renderEmoji(emoji);
 }

@@ -99,4 +99,10 @@ export class MarkdownTemplates {
             .text(text)
             .build();
     }
+
+    static unorderedList() {
+        return create("ul")
+            .classes("markdown")
+            .build();
+    }
 }

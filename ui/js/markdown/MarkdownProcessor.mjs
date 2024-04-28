@@ -68,7 +68,7 @@ export class MarkdownProcessor {
             {name: 'italic', regex: /\*(.*?)\*/g},
             {name: 'link', regex: /\[(.*?)]\((.*?)\)/g},
             {name: 'image', regex: /!\[(.*?)]\((.*?)\)/g},
-            {name: 'emoji', regex: /:(.*?):/g}
+            {name: 'emoji', regex: /:(\w*?):/g}
         ];
         // Keep examining the text until all formatting has been extracted
         while (text.length > 0) {
@@ -153,6 +153,7 @@ export class MarkdownProcessor {
             }
         }
         nodes = MarkdownProcessor.postProcessBlockQuotes(nodes);
+        nodes = MarkdownProcessor.postProcessListItems(nodes);
         return nodes;
     }
 
@@ -168,6 +169,24 @@ export class MarkdownProcessor {
                 }
                 nodes.splice(i + 1, 1);
                 i--;
+            }
+        }
+        return nodes;
+    }
+
+    static postProcessListItems(nodes) {
+        let i = 0;
+        while (i < nodes.length) {
+            if (nodes[i].tagName === 'LI') {
+                // start new list
+                const ul = MarkdownTemplates.unorderedList();
+                while (i < nodes.length && nodes[i].tagName === 'LI') {
+                    ul.appendChild(nodes[i]);
+                    nodes.splice(i, 1); // remove node from original array
+                }
+                nodes.splice(i, 0, ul); // insert new list back into original array
+            } else {
+                i++; // only increment if we didn't find a 'LI'
             }
         }
         return nodes;
