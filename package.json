@@ -25,6 +25,7 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "qs": "^6.11.2",
+    "whisper-node": "^1.1.1",
     "ws": "^8.16.0"
   },
   "devDependencies": {

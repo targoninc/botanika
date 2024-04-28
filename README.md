@@ -55,6 +55,28 @@ Need to set:
 
 After setting up, botanika will automatically use the Ollama API and download the desired models.
 
+## Voice recognition
+
+### OpenAI
+
+[Get API key](https://platform.openai.com/api-keys)
+
+- OPENAI_API_KEY
+
+### Local (probably doesn't work)
+
+Used package: [whisper-node](https://www.npmjs.com/package/whisper-node)
+
+**Setup:**
+
+Follow this [installation instruction](https://github.com/ggerganov/whisper.cpp/issues/168#issuecomment-1889963673).
+
+**Probably doesn't work on windows, because cmake fails**
+
+```bash
+npx whisper-node download
+```
+
 ## Database integration
 
 This feature currently only works with MariaDB/MySQL and requires any LLM provider to be set up.
