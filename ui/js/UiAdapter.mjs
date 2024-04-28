@@ -2,9 +2,10 @@ import {ChatTemplates} from "../templates/ChatTemplates.mjs";
 import {Synthesizer} from "./Synthesizer.mjs";
 import {AudioAssistant} from "./AudioAssistant.mjs";
 import {Api} from "./Api.mjs";
-import {store} from "https://fjs.targoninc.com/f.js";
+import {signal, store} from "https://fjs.targoninc.com/f.js";
 import {MessageTypes} from "./MessageTypes.mjs";
 import {GenericTemplates} from "../templates/GenericTemplates.mjs";
+import {StoreKeys} from "./StoreKeys.mjs";
 
 export class UiAdapter {
     /**
@@ -172,6 +173,8 @@ export class UiAdapter {
         const fallbackToNativeSpeech = !speech && !res.context.assistant.muted;
         const shouldOpen = res.responses.some(r => r.type === "open-command");
         UiAdapter.setHistory(res.context.history, shouldOpen, fallbackToNativeSpeech);
+
+        store().get(StoreKeys.spotifyLoggedIn).value = !!res.context.apis.spotify;
         return true;
     }
 

@@ -22,7 +22,7 @@ const router = new Router(routes, async (route, params) => {
     document.title = `botanika - ${route.title}`;
 
     const state = await Auth.userState();
-    store().get(StoreKeys.spotifyLoggedIn).value = state.context ? state.context.apis.spotify !== null : false;
+    store().get(StoreKeys.spotifyLoggedIn).value = state.context ? !!state.context.apis.spotify : false;
     switch (route.path) {
         case 'chat':
             if (!state.user) {
@@ -109,4 +109,4 @@ setInterval(async () => {
             UiAdapter.focusChatInput();
         }
     });
-}, 5000);
+}, 30000);
