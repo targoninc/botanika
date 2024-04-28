@@ -19,7 +19,7 @@ export class FormatParser {
     }
 
     static isCsv(text) {
-        if (!text) {
+        if (!text || text.constructor !== String) {
             return false;
         }
         if (text.startsWith("[") && text.endsWith("]")) {
@@ -57,6 +57,9 @@ export class FormatParser {
     }
 
     static toJson(text) {
+        if (text.constructor === Object || text.constructor === Array) {
+            text = JSON.stringify(text);
+        }
         if (FormatParser.isJson(text)) {
             return JSON.parse(text);
         } else if (FormatParser.isCsv(text)) {
@@ -78,6 +81,9 @@ export class FormatParser {
     }
 
     static toCsv(text) {
+        if (text.constructor === Object || text.constructor === Array) {
+            text = JSON.stringify(text);
+        }
         if (FormatParser.isCsv(text)) {
             const lines = text.split("\n").filter(Boolean);
             const delimiters = [",", ";", "\t"];

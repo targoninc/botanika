@@ -77,10 +77,10 @@ Broadcast.listen((e) => {
     }
     const message = e.data;
     switch (message) {
-        case 'api-login-success':
+        case 'spotify-login-success':
             store().get(StoreKeys.spotifyLoggedIn).value = true;
             break;
-        case 'api-logout-success':
+        case 'spotify-logout-success':
             store().get(StoreKeys.spotifyLoggedIn).value = false;
             break;
     }
@@ -88,7 +88,7 @@ Broadcast.listen((e) => {
 
 const checkingUpdates = signal(false);
 setInterval(async () => {
-    if (checkingUpdates.value) {
+    if (checkingUpdates.value || store().get("isSending").value) {
         return;
     }
 
