@@ -1,7 +1,8 @@
 export const routes = [
     {
         path: 'chat',
-        title: 'Chat'
+        title: 'Chat',
+        aliases: ['']
     },
     {
         path: 'login',
