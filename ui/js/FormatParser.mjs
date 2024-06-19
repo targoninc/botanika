@@ -56,81 +56,102 @@ export class FormatParser {
         return !badLines;
     }
 
-    static toJson(text) {
-        if (text.constructor === Object || text.constructor === Array) {
-            text = JSON.stringify(text);
-        }
-        if (FormatParser.isJson(text)) {
-            return JSON.parse(text);
-        } else if (FormatParser.isCsv(text)) {
-            const lines = text.split("\n");
-            const firstLine = lines[0];
-            const firstLineParts = firstLine.split(",");
-            return lines.slice(1).map(line => {
-                const lineParts = line.split(",");
-                const obj = {};
-                firstLineParts.forEach((col, i) => {
-                    obj[col] = lineParts[i];
-                });
-                return obj;
-            });
+    static toJson(text, inFormat) {
+        if (inFormat === "json") {
+            return FormatParser.jsonFromString(text);
+        } else if (inFormat === "csv") {
+            return FormatParser.jsonFromCsvString(text);
         } else {
             console.log("No format detected");
             return text;
         }
     }
 
-    static toCsv(text) {
-        if (text.constructor === Object || text.constructor === Array) {
-            text = JSON.stringify(text);
+    static jsonFromString(text) {
+        let base = JSON.parse(text);
+        if (Object.keys(base).length === 1 && base[Object.keys(base)[0]].constructor === Array) {
+            base = base[Object.keys(base)[0]];
+            return FormatParser.jsonFromString(JSON.stringify(base));
+        } else {
+            return base;
         }
-        if (FormatParser.isCsv(text)) {
-            const lines = text.split("\n").filter(Boolean);
-            const delimiters = [",", ";", "\t"];
-            const firstLine = lines[0];
+    }
 
-            let delimiter;
-            for (let potentialDelimiter of delimiters) {
-                if (firstLine.includes(potentialDelimiter)) {
-                    delimiter = potentialDelimiter;
-                    break;
-                }
-            }
-
-            const firstLinePartsCount = firstLine.split(delimiter).length;
-            return lines.map(line => {
-                if (line.split(delimiter).length > firstLinePartsCount) {
-                    return line.split(delimiter).slice(0, firstLinePartsCount).join(delimiter);
-                } else if (line.split(delimiter).length < firstLinePartsCount) {
-                    return line + ",".repeat(firstLinePartsCount - line.split(delimiter).length);
-                } else {
-                    return line;
-                }
+    static jsonFromCsvString(text) {
+        const lines = text.split("\n");
+        const firstLine = lines[0];
+        const firstLineParts = firstLine.split(",");
+        return lines.slice(1).map(line => {
+            const lineParts = line.split(",");
+            const obj = {};
+            firstLineParts.forEach((col, i) => {
+                obj[col] = lineParts[i];
             });
+            return obj;
+        });
+    }
+
+    static toCsv(text, inFormat) {
+        if (inFormat === "csv") {
+            return FormatParser.csvFromString(text);
+        } else if (inFormat === "json") {
+            return FormatParser.csvFromJsonString(text);
+        } else {
+            console.log("No format detected");
+            return text;
         }
-        if (FormatParser.isJson(text)) {
-            const json = JSON.parse(text);
-            if (json.constructor === Array) {
-                const keys = Object.keys(json[0]);
-                const csv = [keys.join(",")];
-                json.forEach(obj => {
-                    const line = keys.map(key => {
-                        return obj[key];
-                    }).join(",");
-                    csv.push(line);
-                });
-                return csv.join("\n");
-            } else {
-                const keys = Object.keys(json);
-                const csv = [keys.join(",")];
+    }
+
+    static csvFromJsonString(text) {
+        let json = JSON.parse(text);
+        if (json.constructor === Array) {
+            const keys = Object.keys(json[0]);
+            const csv = [keys.join(",")];
+            json.forEach(obj => {
                 const line = keys.map(key => {
-                    return json[key];
+                    return obj[key].constructor === String ? obj[key] : JSON.stringify(obj[key]);
                 }).join(",");
                 csv.push(line);
-                return csv.join("\n");
+            });
+            return csv.join("\n");
+        } else {
+            if (Object.keys(json).length === 1 && json[Object.keys(json)[0]].constructor === Array) {
+                json = json[Object.keys(json)[0]];
+                return FormatParser.csvFromJsonString(JSON.stringify(json));
+            }
+
+            const keys = Object.keys(json);
+            const csv = [keys.join(",")];
+            const line = keys.map(key => {
+                return json[key].constructor === String ? json[key] : JSON.stringify(json[key]);
+            }).join(",");
+            csv.push(line);
+            return csv.join("\n");
+        }
+    }
+
+    static csvFromString(text) {
+        const lines = text.split("\n").filter(Boolean);
+        const delimiters = [",", ";", "\t"];
+        const firstLine = lines[0];
+
+        let delimiter;
+        for (let potentialDelimiter of delimiters) {
+            if (firstLine.includes(potentialDelimiter)) {
+                delimiter = potentialDelimiter;
+                break;
             }
         }
-        console.log("No format detected");
-        return text;
+
+        const firstLinePartsCount = firstLine.split(delimiter).length;
+        return lines.map(line => {
+            if (line.split(delimiter).length > firstLinePartsCount) {
+                return line.split(delimiter).slice(0, firstLinePartsCount).join(delimiter);
+            } else if (line.split(delimiter).length < firstLinePartsCount) {
+                return line + ",".repeat(firstLinePartsCount - line.split(delimiter).length);
+            } else {
+                return line;
+            }
+        });
     }
 }
