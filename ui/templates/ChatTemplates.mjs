@@ -66,6 +66,9 @@ export class ChatTemplates {
     static data(text) {
         text = text.constructor !== String ? JSON.stringify(text) : text;
         const format = FormatParser.getFormat(text);
+        if (format === "text") {
+            return ChatTemplates.message("data", text);
+        }
         const json = FormatParser.toJson(text, format);
         const csv = FormatParser.toCsv(text, format);
         const buttons = [
