@@ -2,6 +2,7 @@ import {create, ifjs, signal, store} from "https://fjs.targoninc.com/f.js";
 import {Auth} from "../js/Auth.mjs";
 import {GenericTemplates} from "./GenericTemplates.mjs";
 import {StoreKeys} from "../js/StoreKeys.mjs";
+import {ChatTemplates} from "./ChatTemplates.mjs";
 
 export class UserTemplates {
     static login(router) {
@@ -29,12 +30,17 @@ export class UserTemplates {
                                     .classes("login-error")
                                     .build(),
                             ).build(),
-                        GenericTemplates.buttonWithSpinner("Log in", async () => {
-                            isLoading.value = true;
-                            await Auth.authorizeFromForm(router, () => {
-                                isLoading.value = false;
-                            });
-                        }, "login", isLoading, [buttonClass]),
+                        create("div")
+                            .classes("flex", "align-content")
+                            .children(
+                                ChatTemplates.featureButton(),
+                                GenericTemplates.buttonWithSpinner("Log in", async () => {
+                                    isLoading.value = true;
+                                    await Auth.authorizeFromForm(router, () => {
+                                        isLoading.value = false;
+                                    });
+                                }, "login", isLoading, [buttonClass]),
+                            ).build(),
                         ifjs(store().get(StoreKeys.isCheckingAuth), create("div")
                             .classes("flex", "align-content")
                             .children(
