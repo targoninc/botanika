@@ -237,8 +237,9 @@ export class ChatTemplates {
 
     static chatInputField() {
         const resizeField = (e) => {
-            e.target.style.height = "auto";
-            e.target.style.height = (e.target.scrollHeight - 13) + "px";
+            const input = document.querySelector(".chat-box-input-field");
+            input.style.height = "auto";
+            input.style.height = (input.scrollHeight - 13) + "px";
         }
 
         return create("textarea")

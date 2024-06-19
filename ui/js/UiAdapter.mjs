@@ -73,6 +73,9 @@ export class UiAdapter {
 
     static setChatInput(value) {
         document.querySelector('.chat-box-input-field').value = value;
+        const input = document.querySelector(".chat-box-input-field");
+        input.style.height = "auto";
+        input.style.height = (input.scrollHeight - 13) + "px";
     }
 
     static setHistory(res, openLast, speak) {
