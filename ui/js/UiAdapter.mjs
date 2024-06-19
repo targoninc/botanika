@@ -182,4 +182,14 @@ export class UiAdapter {
         const container = document.querySelector(".toast-container");
         container.appendChild(GenericTemplates.toast(message, type, timeout));
     }
+
+    static infoPopup(title, content, onClose = () => {}, classes = []) {
+        const container = document.querySelector(".popup-container");
+        container.appendChild(GenericTemplates.infoPopup(title, content, () => {
+            for (const c of container.children) {
+                c.remove();
+            }
+            onClose();
+        }, classes));
+    }
 }

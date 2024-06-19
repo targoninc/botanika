@@ -471,6 +471,41 @@ button.active {
     border-radius: 100%;
 }
 
+.popup-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.popup {
+    margin: auto;
+    background: var(--background-alt);
+    border: 1px solid var(--foreground-alt);
+    border-radius: var(--border-radius);
+    padding: var(--regular-padding);
+    display: flex;
+    gap: var(--gap);
+    align-self: end;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    max-width: calc(100% - var(--big-gap));
+    pointer-events: auto;
+    min-width: 300px;
+}
+
+.popup-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap);
+}
+
 .toast-container {
     position: fixed;
     top: 0;

@@ -94,4 +94,32 @@ export class GenericTemplates {
                     .build()
             ).build();
     }
+
+    static infoPopup(title, content, onClose = () => {}, classes = []) {
+        return create("div")
+            .classes("popup-wrapper")
+            .children(
+                create("div")
+                    .classes("popup", "flex-v", ...classes)
+                    .children(
+                        create("h1")
+                            .classes("popup-title")
+                            .text(title)
+                            .build(),
+                        create("div")
+                            .classes("popup-content", "flex-v")
+                            .children(content)
+                            .build(),
+                        create("div")
+                            .classes("popup-footer", "flex")
+                            .children(
+                                create("button")
+                                    .classes("popup-close")
+                                    .text("Close")
+                                    .onclick(onClose)
+                                    .build()
+                            ).build()
+                    ).build()
+            ).build();
+    }
 }

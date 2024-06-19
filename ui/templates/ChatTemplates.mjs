@@ -167,6 +167,7 @@ export class ChatTemplates {
                                 ChatTemplates.resetContextButton(),
                                 ChatTemplates.resetHistoryButton(),
                                 ChatTemplates.spotifyButton(),
+                                ChatTemplates.featureButton(),
                             ).build(),
                         create("div")
                             .classes("flex")
@@ -296,5 +297,39 @@ export class ChatTemplates {
             .classes("message", "text-message", "flex-v", "loading", "user")
             .children()
             .build();
+    }
+
+    static featureButton() {
+        return GenericTemplates.button("Features", async () => {
+            await UiAdapter.infoPopup("Features", ChatTemplates.featurePopup());
+        }, "feature_search");
+    }
+
+    static featurePopup() {
+        return create("ul")
+            .classes("feature-list")
+            .children(
+                create("li")
+                    .text("Spotify integration")
+                    .build(),
+                create("li")
+                    .text("Create csv + json files")
+                    .build(),
+                create("li")
+                    .text("Ask about the weather")
+                    .build(),
+                create("li")
+                    .text("Query connected databases")
+                    .build(),
+                create("li")
+                    .text("Open URLs")
+                    .build(),
+                create("li")
+                    .text("Modify the chat history")
+                    .build(),
+                create("li")
+                    .text("Voice chat")
+                    .build(),
+            ).build();
     }
 }
