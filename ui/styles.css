@@ -18,21 +18,47 @@
     --color-7: #A63BFF;
     --color-8: #FF3BDE;
     --color-9: #FF3B8C;
+    --font-size: 18px;
     --regular-padding: 10px;
     --small-padding: 5px;
     --vertical-input-padding: 0.4rem;
     --horizontal-input-padding: 0.6rem;
     --input-padding: var(--vertical-input-padding) var(--horizontal-input-padding);
     --gap: 5px;
+    --big-gap: 10px;
     --spotify-green: #1DB954;
     --spotify-black: #191414;
+}
+
+@media (pointer: none), (pointer: coarse) {
+    :root {
+        --font-size: 20px;
+    }
+
+    .not-mobile {
+        display: none;
+    }
+
+    .chat-box-input {
+        flex-wrap: nowrap;
+    }
+
+    .chat-box-input-field {
+        max-width: calc(100% - 100px);
+    }
 }
 
 body, html {
     height: 100%;
     margin: 0;
-    background: var(--background);
+    background: var(--background-alt);
     color: var(--foreground);
+    font-family: sans-serif;
+    font-size: var(--font-size);
+}
+
+.long-text {
+    font-size: 0.8rem;
     font-family: sans-serif;
 }
 
@@ -44,7 +70,7 @@ body, html {
     display: none;
 }
 
-.text-message, .data-message {
+.text-message, .data-message, .image-message {
     padding: var(--regular-padding);
     background: var(--background-alt);
     width: max-content;
@@ -52,11 +78,17 @@ body, html {
     max-width: calc(100% - 30px);
 }
 
+.image-message {
+    padding: 0;
+    overflow: hidden;
+}
+
 .data-message {
     background: var(--background-alt);
     overflow: auto;
     max-height: 50vh;
     height: max-content;
+    flex-wrap: nowrap !important;
 }
 
 .chat-box {
@@ -109,7 +141,7 @@ body, html {
     font-size: 2rem;
 }
 
-.send-button.sending {
+button.disabled {
     cursor: not-allowed;
     pointer-events: none;
     background: var(--background-alt-2);
@@ -120,8 +152,28 @@ body, html {
     font-size: 2rem;
 }
 
+.send-button.disabled img {
+    filter: grayscale(1) !important;
+    animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .send-button .material-symbols-outlined {
     font-size: 2rem !important;
+}
+
+.send-button img.icon {
+    height: 2rem;
+    width: 2rem;
+    filter: none;
 }
 
 .chat-box-input-field:focus {
@@ -139,6 +191,10 @@ body, html {
 
 .message.user {
     border-right: 5px solid var(--color-4);
+}
+
+.message.user.loading {
+    border-left: none;
 }
 
 .message.error {
@@ -222,6 +278,11 @@ body, html {
 .flex, .flex-v {
     display: flex;
     gap: var(--gap);
+    flex-wrap: wrap;
+}
+
+.big-gap {
+    gap: var(--big-gap);
 }
 
 .align-content {
@@ -271,6 +332,19 @@ button, input, textarea {
     background: var(--background-alt);
     color: var(--foreground);
     padding: var(--input-padding);
+    font-family: sans-serif;
+}
+
+blockquote {
+    background: var(--background);
+    margin: 0;
+    padding: var(--regular-padding);
+    border-radius: var(--border-radius);
+}
+
+.emoji img {
+    height: 1rem;
+    width: 1rem;
 }
 
 input {
@@ -281,14 +355,16 @@ input {
     color: var(--foreground);
 }
 
+input.disabled {
+    color: var(--foreground-alt-3);
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
     font-family: monospace;
-}
-
-table, th, td {
-    border: 1px solid var(--foreground-alt-3);
 }
 
 th, td {
@@ -300,20 +376,35 @@ th {
     background: var(--background-alt);
 }
 
+tr {
+    border: 1px solid transparent;
+}
+
 tr:nth-child(even) {
     background-color: var(--background-alt-2);
 }
 
 tr:hover {
-    background-color: var(--background-alt);
+    background-color: var(--background-alt-3);
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+}
+
+.send-button {
+    align-self: end;
 }
 
 a {
+    font-family: sans-serif;
     color: var(--color-6);
+    text-decoration: none;
 }
 
 a:hover {
     color: var(--color-5);
+    text-decoration: underline;
 }
 
 button.active {
@@ -334,4 +425,115 @@ button.active {
     height: 1rem;
     width: 1rem;
     filter: invert(1);
+}
+
+.spinner {
+    --spinner-size: 1em;
+    --translation-size: calc(var(--spinner-size) / 2 - var(--spinner-size) / 10);
+    height: var(--spinner-size);
+    width: var(--spinner-size);
+    position: relative;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner > div {
+    box-sizing: border-box;
+    position: absolute;
+    width: 20%; /*This size will affect the distance of the dots from the center.*/
+    height: 20%; /*Should be the same as the width.*/
+    border-radius: 50%;
+    background-color: var(--foreground);
+    animation: spinning-circle 1.4s linear infinite;
+}
+
+@keyframes spinning-circle {
+    0% {
+        transform: rotate(0deg) translate(var(--translation-size)) rotate(0deg) scale(0.5);
+    }
+    50% {
+        transform: rotate(240deg) translate(var(--translation-size)) rotate(-240deg) scale(1);
+    }
+    100% {
+        transform: rotate(360deg) translate(var(--translation-size)) rotate(-360deg) scale(0.5);
+    }
+}
+
+.spinner > div::after {
+    content: "";
+    display: block;
+    margin: 0 auto;
+    width: 15%;
+    height: 15%;
+    background-color: var(--foreground);
+    border-radius: 100%;
+}
+
+.popup-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.popup {
+    margin: auto;
+    background: var(--background-alt);
+    border: 1px solid var(--foreground-alt);
+    border-radius: var(--border-radius);
+    padding: var(--regular-padding);
+    display: flex;
+    gap: var(--gap);
+    align-self: end;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    max-width: calc(100% - var(--big-gap));
+    pointer-events: auto;
+    min-width: 300px;
+}
+
+.popup-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--gap);
+}
+
+.toast-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    padding: var(--regular-padding);
+    z-index: 999;
+}
+
+.toast {
+    background: var(--background-alt);
+    border: 1px solid var(--foreground-alt);
+    border-radius: var(--border-radius);
+    padding: var(--regular-padding);
+    display: flex;
+    gap: var(--gap);
+    align-self: end;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    max-width: max-content;
+}
+
+.toast.error {
+    border-color: var(--color-1);
+}
+
+.toast.success {
+    border-color: var(--color-4);
 }

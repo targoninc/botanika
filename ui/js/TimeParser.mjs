@@ -58,29 +58,34 @@ export class TimeParser {
     }
 
     static formatToSensible(timeInMs, language = "en") {
-        const seconds = timeInMs / 1000;
-        const minutes = seconds / 60;
-        const hours = minutes / 60;
-        const days = hours / 24;
-        const weeks = days / 7;
-        const months = weeks / 4.34524;
-        const years = months / 12;
+        const seconds = Math.floor(timeInMs / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        const weeks = Math.floor(days / 7);
+        const months = Math.floor(weeks / 4.34524);
+        const years = Math.floor(months / 12);
+
+        function remainder(time, unit) {
+            return time % unit;
+        }
+
         if (years >= 1) {
-            return `${years.toFixed(2)} ${TimeParser.yearWord(language)}`;
+            return `${years} ${TimeParser.yearWord(language)} ${remainder(months, 12)} ${TimeParser.monthWord(language)}`;
         } else if (months >= 1) {
-            return `${months.toFixed(2)} ${TimeParser.monthWord(language)}`;
+            return `${months} ${TimeParser.monthWord(language)} ${remainder(weeks, 4.34524)} ${TimeParser.weekWord(language)}`;
         } else if (weeks >= 1) {
-            return `${weeks.toFixed(2)} ${TimeParser.weekWord(language)}`;
+            return `${weeks} ${TimeParser.weekWord(language)} ${remainder(days, 7)} ${TimeParser.dayWord(language)}`;
         } else if (days >= 1) {
-            return `${days.toFixed(2)} ${TimeParser.dayWord(language)}`;
+            return `${days} ${TimeParser.dayWord(language)} ${remainder(hours, 24)} ${TimeParser.hourWord(language)}`;
         } else if (hours >= 1) {
-            return `${hours.toFixed(2)} ${TimeParser.hourWord(language)}`;
+            return `${hours} ${TimeParser.hourWord(language)} ${remainder(minutes, 60)} ${TimeParser.minuteWord(language)}`;
         } else if (minutes >= 1) {
-            return `${minutes.toFixed(2)} ${TimeParser.minuteWord(language)}`;
+            return `${minutes} ${TimeParser.minuteWord(language)} ${remainder(seconds, 60)} ${TimeParser.secondWord(language)}`;
         } else if (seconds >= 1) {
-            return `${seconds.toFixed(2)} ${TimeParser.secondWord(language)}`;
+            return `${seconds} ${TimeParser.secondWord(language)} ${remainder(timeInMs, 1000)} ${TimeParser.millisecondWord(language)}`;
         } else {
-            return `${timeInMs.toFixed(2)} ${TimeParser.millisecondWord(language)}`;
+            return `${timeInMs} ${TimeParser.millisecondWord(language)}`;
         }
     }
 

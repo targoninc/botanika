@@ -23,6 +23,9 @@ export class Api {
     static async get(url, sendCredentials = true) {
         const res = await fetch(url, {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             credentials: sendCredentials ? 'include' : 'omit'
         });
         return await this.basicResponseHandling(res);
@@ -102,6 +105,17 @@ export class Api {
         const res = await this.post(`/api/toggle-assistant-mute`);
         if (res.status !== 200) {
             throw new Error(`Failed to toggle assistant mute: ${res.status}`);
+        }
+        return res.data;
+    }
+
+    static async askForChanges() {
+        const res = await this.post(`/api/ask-for-changes`);
+        if (res.status === 204) {
+            return null;
+        }
+        if (res.status !== 200) {
+            throw new Error(`Failed to ask for changes: ${res.status}`);
         }
         return res.data;
     }

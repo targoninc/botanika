@@ -9,10 +9,12 @@ import {Router} from "./js/Router.mjs";
 import {routes} from "./js/Routes.mjs";
 import {signal, store} from "https://fjs.targoninc.com/f.js";
 import {StoreKeys} from "./js/StoreKeys.mjs";
+import {Api} from "./js/Api.mjs";
 
 store().set(StoreKeys.isSending, signal(false));
 store().set(StoreKeys.spotifyLoggedIn, signal(false));
 store().set(StoreKeys.currentLoudness, signal(0));
+store().set(StoreKeys.isCheckingAuth, signal(false));
 
 const router = new Router(routes, async (route, params) => {
     const content = document.getElementById('content');
@@ -20,6 +22,7 @@ const router = new Router(routes, async (route, params) => {
     document.title = `botanika - ${route.title}`;
 
     const state = await Auth.userState();
+    store().get(StoreKeys.spotifyLoggedIn).value = state.context ? !!state.context.apis.spotify : false;
     switch (route.path) {
         case 'chat':
             if (!state.user) {
@@ -82,3 +85,28 @@ Broadcast.listen((e) => {
             break;
     }
 });
+
+const checkingUpdates = signal(false);
+setInterval(async () => {
+    if (checkingUpdates.value || store().get("isSending").value) {
+        return;
+    }
+
+    checkingUpdates.value = true;
+    Api.askForChanges().then((res) => {
+        checkingUpdates.value = false;
+        if (res) {
+            if (res.error.includes("Not authenticated")) {
+                if (router.currentRoute.path === 'login') {
+                    return;
+                }
+                router.navigate('login');
+                return;
+            }
+
+            UiAdapter.afterMessage(res);
+            store().get("isSending").value = false;
+            UiAdapter.focusChatInput();
+        }
+    });
+}, 30000);

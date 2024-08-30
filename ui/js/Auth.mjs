@@ -1,17 +1,23 @@
 import {Api} from "./Api.mjs";
 import {UiAdapter} from "./UiAdapter.mjs";
+import {StoreKeys} from "./StoreKeys.mjs";
+import {store} from "https://fjs.targoninc.com/f.js";
 
 export class Auth {
     static async userState() {
-        return await Api.isAuthorized();
+        store().get(StoreKeys.isCheckingAuth).value = true;
+        const res = await Api.isAuthorized();
+        store().get(StoreKeys.isCheckingAuth).value = false;
+        return res;
     }
 
-    static async authorizeFromForm(router) {
+    static async authorizeFromForm(router, onError = () => {}) {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         Auth.authorize(username, password).then((res) => {
             if (res.error) {
                 UiAdapter.showLoginError(res.error);
+                onError();
                 return;
             }
             router.navigate("chat");
