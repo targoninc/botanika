@@ -7,11 +7,14 @@ WORKDIR /usr/src/app
 # Copy the current directory contents into the container at /usr/src/app
 COPY . .
 
+# Install Bun
+RUN curl -fsSL https://bun.sh/install | bash
+
 # Install the project dependencies
-RUN npm install
+RUN bun install
 
 # Make the app's ports available to the outside world
 EXPOSE 3000
 
 # Define the command to run the app
-CMD ["npm", "run", "start"]
+CMD ["bun", "run", "startBun"]
