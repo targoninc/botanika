@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node main.mjs",
     "startLocal": "npm run start && open http://localhost:3000",
-    "startBun": "bun --watch main.mjs"
+    "startBunDev": "bun --watch main.mjs",
+    "startBunProd": "bun main.mjs"
   },
   "private": true,
   "type": "module",
