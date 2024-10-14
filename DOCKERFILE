@@ -10,7 +10,7 @@ COPY . .
 RUN apt-get update
 
 # Install curl
-RUN apt-get install curl -y
+RUN apt-get install curl unzip -y
 
 # Install Bun
 RUN curl -fsSL https://bun.sh/install | bash
